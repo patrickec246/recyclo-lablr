@@ -133,6 +133,11 @@ canvas.onmousemove = function(e) {
 		if (mgr.replace_closest_point(e.offsetX, e.offsetY, 20)) {
 			reload_canvas();
 		}
+	} else {
+		hovering = mgr.mouseHover(e.offsetX, e.offsetY, reload_canvas);
+
+		canvas.style.cursor = hovering ? 'pointer' : 'crosshair';
+
 	}
 }
 
@@ -162,3 +167,23 @@ closeBtn.onclick = function(e) {
 	mgr.deselect_shapes();
 	reload_canvas();
 }
+
+savePoint = document.getElementById('savePoint');
+
+document.getElementById('typeLabel').addEventListener("keyup", function(e) {
+	if (e.keyCode == 13) {
+		savePoint.click();
+	}
+});
+
+document.getElementById('featuresLabel').addEventListener("keyup", function(e) {
+	if (e.keyCode == 13) {
+		savePoint.click();
+	}
+});
+
+document.getElementById('producerLabel').addEventListener("keyup", function(e) {
+	if (e.keyCode == 13) {
+		savePoint.click();
+	}
+});

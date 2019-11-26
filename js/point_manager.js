@@ -341,6 +341,22 @@ class ShapeManager {
 
 		return JSON.stringify(output);
 	}
+
+	mouseHover(x, y, reload) {
+		var hoverEvent = false;
+		for (var i = 0; i < this.shapes.length; i++) {
+			if (this.shapes[i].inside_shape(x, y)) {
+				this.shapes[i].selected = true;
+				reload();
+				hoverEvent = true;
+			} else if (this.shapes[i].selected) {
+				this.shapes[i].selected = false;
+				reload();
+			}
+		}
+
+		return hoverEvent;
+	}
 }
 
 class StatsManager {

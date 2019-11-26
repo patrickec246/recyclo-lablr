@@ -1,9 +1,7 @@
 Client:
 - Update point sorting method to prevent intesections on polygons
     - Enforce point sorting after all relevant point operations
-- Change cursor when hovering over a polygon shape
 - Redesign shapeDock to be smaller
-- Add shortcuts (tab, enter) to shapeDock
 - Add settings to sidebar
 - Visual touchups to sidebar
     - Reorganize buttons
