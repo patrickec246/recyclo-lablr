@@ -8,7 +8,7 @@ var stats = new StatsManager();
 
 // set load hooks
 window.onload = reload_canvas;
-window,onresize = reload_canvas;
+window.onresize = reload_canvas;
 
 // working vars
 var selected_shape = null;
@@ -33,6 +33,7 @@ function delete_selected_shape() {
 		mgr.delete_shape(selected_shape);
 		selected_shape = null;
 		shapeDock.style.display = 'none';
+		mgr.deselect_shapes();
 		reload_canvas();
 	}
 }
@@ -41,6 +42,7 @@ function update_selected_shape() {
 	if (selected_shape) {
 		selected_shape.label = document.getElementById('typeLabel').value;
 		shapeDock.style.display = 'none';
+		mgr.deselect_shapes();
 		reload_canvas();
 	}
 }
@@ -72,12 +74,13 @@ function addShape() {
 
 function clearShapes() {
 	mgr.clear_shapes();
+	reload_canvas();
 }
 
 function skipImage() {
 	clearShapes();
 	img_number += 1;
-	current_img = 'imgz/' + img_number.toString().padStart(4, '0') + '.jpg';
+	current_img = 'imgs/' + img_number.toString().padStart(4, '0') + '.jpg';
 	reload_canvas();
 }
 
@@ -141,6 +144,8 @@ canvas.onclick = function(e) {
 
 		document.getElementById('typeLabel').value = selection.label;
 	}
+
+	reload_canvas();
 }
 
 //
@@ -156,4 +161,6 @@ closeBtn.onclick = function(e) {
 	} else {
 		shapeDock.style.display = 'none';
 	}
+	mgr.deselect_shapes();
+	reload_canvas();
 }

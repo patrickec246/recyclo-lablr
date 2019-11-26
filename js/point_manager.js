@@ -2,6 +2,7 @@ class Shape {
 	qualifiers = "";
 	label = "";
 	points = new Array();
+	selected = false;
 
 	constructor(label = null) {
 		if (label) {
@@ -19,6 +20,14 @@ class Shape {
 
 	clear() {
 		this.points.length = 0;
+	}
+
+	set_selected(selected) {
+		this.selected = selected;
+	}
+
+	is_selected() {
+		return this.selected;
 	}
 
 	add_point(x, y) {
@@ -180,9 +189,16 @@ class ShapeManager {
 		return false;
 	}
 
+	deselect_shapes() {
+		this.shapes.forEach(shape => {
+			shape.set_selected(false);
+		});
+	}
+
 	select_shape(x, y) {
 		for (var i = 0; i < this.shapes.length; i++) {
 			if (this.shapes[i].inside_shape(x, y)) {
+				this.shapes[i].set_selected(true);
 				return this.shapes[i];
 			}
 		}
@@ -258,19 +274,19 @@ class ShapeManager {
 		}
 
 		ctx.closePath();
-		ctx.fillStyle = 'rgba(0, 0, 0, .15)';
+		ctx.fillStyle = shape.selected ? 'rgba(0, 0, 0, .3)' : 'rgba(0, 0, 0, .15)';
 		ctx.fill();
 
-		ctx.strokeStyle = 'rgba(0, 255, 255, .7)';
+		ctx.strokeStyle = shape.selected ? 'rgba(255, 255, 255, .9)' : 'rgba(0, 255, 255, .7)';
 		ctx.stroke();
 
 		// draw edge points
 		for (var i = 0; i < shape.points.length; i++) {
 			var point = shape.points[i];
 			ctx.lineJoin = 'bevel';
-			ctx.strokeStyle='red';
+			ctx.strokeStyle= shape.selected ? 'green' : 'red';
 			ctx.strokeRect(point.x - 2, point.y - 2, 5, 5);
-			ctx.fillStyle='white';
+			ctx.fillStyle= shape.selected ? 'red' : 'white';
 			ctx.fillText(i, point.x + 5, point.y + 5);
 		}
 
