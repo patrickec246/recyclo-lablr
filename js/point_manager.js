@@ -286,7 +286,7 @@ class ShapeManager {
 			ctx.lineJoin = 'bevel';
 			ctx.strokeStyle= shape.selected ? 'green' : 'red';
 			ctx.strokeRect(point.x - 2, point.y - 2, 5, 5);
-			ctx.fillStyle= shape.selected ? 'red' : 'white';
+			ctx.fillStyle = 'white';
 			ctx.fillText(i, point.x + 5, point.y + 5);
 		}
 
