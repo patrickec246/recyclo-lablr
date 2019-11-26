@@ -1,6 +1,10 @@
- <link rel="stylesheet" href="./style.css">
+ <link rel="stylesheet" href="./css/style.css">
  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">  
+
+<title>
+	recyclr - Thanks for labeling!
+</title>
 
 <div class="canvas">
 	<!-- div for canvas -->
@@ -40,38 +44,38 @@
 	
 	<div class="cpanel">
 		<center>
-			<h1>lablr</h1>
+			<h1>recyclr</h1>
 		</center>
 		<center>
-			Number of labeled images:
+			Images labeled:
 			<br/>
-			<span class="badge badge-info">i images</span>
+			<span class="badge badge-info" id="imgCounter">0 images</span>
 			<br/><br/>
 
 			Estimated effect:<br/>
-			<span class="badge badge-success">+ j% mAP</span>
+			<span class="badge badge-success" id="mAPCounter">+ 0.0% mAP</span>
 		</center>
 		<br/>
 
 		<div class="shapeButtons">
-			<button onclick="addShape()" class="btn btn-outline-primary btn-sm longButton">
+			<button class="btn btn-outline-primary btn-sm longButton" onclick="addShape()">
 				Add Polygon 🆕
 			</button>
 
-			<button class="btn btn-outline-danger btn-sm longButton">
+			<button class="btn btn-outline-danger btn-sm longButton" onclick="clearShapes()">
 				Clear Polygons 🚫
 			</button>
 
-			<button class="btn btn-outline-secondary btn-sm longButton">
+			<button class="btn btn-outline-secondary btn-sm longButton" onclick="skipImage()">
 				Skip Image ⏭️
 			</button>
 
-			<button class="btn btn-outline-success btn-sm longButton">
+			<button class="btn btn-outline-success btn-sm longButton" onclick="submitLabels()">
 			Submit Label 👍
 			</button>
 		</div>
 	</div>
 </div>
 
-<script src="point_manager.js" type="text/javascript"></script>
-<script src="canvas.js" type="text/javascript"></script>
+<script src="js/point_manager.js" type="text/javascript"></script>
+<script src="js/canvas.js" type="text/javascript"></script>
