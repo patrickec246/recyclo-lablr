@@ -104,12 +104,17 @@ canvas.onmousedown = function(e) {
 		added_shape.add_point(e.offsetX, e.offsetY);
 
 		if (added_shape.num_points() == 4) {
+			added_shape.set_selected(true);
 			mgr.add_shape(added_shape);
+			added_shape.show_dock(shapeDock);
+
+			selected_shape = added_shape;
 			added_shape = null;
 			add_shape = false;
 		}
 
 		reload_canvas();
+		return;
 	}
 
 	if (mgr.replace_closest_point(e.offsetX, e.offsetY)) {
@@ -135,14 +140,7 @@ canvas.onclick = function(e) {
 	var selection = mgr.select_shape(e.offsetX, e.offsetY);
 
 	if (selection) {
-		selected_shape = selection;
-		var dockLoc = selection.calculate_dock_location(300, 215);
-
-		shapeDock.style.left = dockLoc[0];
-		shapeDock.style.top  = dockLoc[1];
-		shapeDock.style.display = 'block';
-
-		document.getElementById('typeLabel').value = selection.label;
+		selection.show_dock(shapeDock);
 	}
 
 	reload_canvas();

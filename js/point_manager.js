@@ -1,6 +1,7 @@
 class Shape {
 	qualifiers = "";
 	label = "";
+	producer = "";
 	points = new Array();
 	selected = false;
 
@@ -37,6 +38,19 @@ class Shape {
 		this.sort_points();
 
 		return true;
+	}
+
+	show_dock(shapeDock) {
+		var dockLoc = this.calculate_dock_location(300, 215);
+
+		shapeDock.style.left = dockLoc[0];
+		shapeDock.style.top  = dockLoc[1];
+		shapeDock.style.display = 'block';
+
+		document.getElementById('typeLabel').value = this.label;
+		document.getElementById('featuresLabel').value = this.qualifiers;
+		document.getElementById('producerLabel').value = this.producer;
+		document.getElementById('typeLabel').focus();
 	}
 
 	num_points() {
