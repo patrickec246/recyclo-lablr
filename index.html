@@ -1,11 +1,15 @@
- <link rel="stylesheet" href="./css/style.css">
- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">  
- <link rel='icon' href='static/favicon.ico' type='image/x-icon'/ >
+ <head>
+	 <link rel="stylesheet" href="./css/style.css">
+	 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+	 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">  
+	 <link rel='icon' href='static/favicon.ico' type='image/x-icon'/ >
+	 
+	 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
-<title>
-	recyclr: ai for earth 😎👌💦
-</title>
+	<title>
+		recyclr: ai for earth 😎👌💦
+	</title>
+</head>
 
 <div class="canvas">
 	<!-- div for canvas -->
@@ -59,6 +63,36 @@
 		<br/>
 
 		<div class="shapeButtons">
+			<div class="form-check">
+				<input class="form-check-input" type="checkbox" value="" id="loadAnnotations">
+				<label class="form-check-label smallish-label">
+					Load Polygons from Server
+				</label>
+				<label class="small-label">
+					If a frame has already been labeled, those annotations can be requested from the server for quick verification/tweaking.
+				</label>
+			</div>
+			<hr class="low-hr"/>
+			<div class="form-check">
+				<input class="form-check-input" type="checkbox" value="" id="sequentialFrames">
+				<label class="form-check-label smallish-label">
+					Request Sequential Frames
+				</label>
+				<label class="small-label">
+					Request the next frame from the current frame's video sequence if available. By default, the next image will be a random image.
+				</label>
+			</div>
+			<hr class="low-hr"/>
+			<div class="form-check">
+				<input class="form-check-input" type="checkbox" value="" id="previousAnnotations" disabled="true">
+				<label class="form-check-label smallish-label">
+					Keep Last Frame Polygons
+				</label>
+				<label class="small-label">
+					When loading sequential frames from a video, load the polygons from the last frame for quick verification/tweaking.
+				</label>
+			</div>
+			<hr class="low-hr"/>
 			<button class="btn btn-outline-primary btn-sm longButton" onclick="addShape()">
 				Add Polygon 🆕
 			</button>

@@ -72,6 +72,19 @@ function addShape() {
 	}
 }
 
+function retrieve_next_image(sequential=false) {
+	if (sequential) {
+		img_number += 1;
+	} else {
+		var max = 27;
+		img_number = Math.floor(Math.random() * Math.floor(max));
+	}
+
+	current_img = 'imgs/' + img_number.toString().padStart(4, '0') + '.jpg';
+	console.log(current_img);
+	reload_canvas();
+}
+
 function clearShapes() {
 	mgr.clear_shapes();
 	reload_canvas();
@@ -79,8 +92,7 @@ function clearShapes() {
 
 function skipImage() {
 	clearShapes();
-	img_number += 1;
-	current_img = 'imgs/' + img_number.toString().padStart(4, '0') + '.jpg';
+	retrieve_next_image(document.getElementById("sequentialFrames").checked);
 	reload_canvas();
 }
 
@@ -187,3 +199,7 @@ document.getElementById('producerLabel').addEventListener("keyup", function(e) {
 		savePoint.click();
 	}
 });
+
+$("#sequentialFrames").change(function() {
+	$("#previousAnnotations").prop("disabled", !this.checked);
+})
