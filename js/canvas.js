@@ -91,8 +91,14 @@ function clearShapes() {
 }
 
 function skipImage() {
-	clearShapes();
-	retrieve_next_image(document.getElementById("sequentialFrames").checked);
+	var sequential = document.getElementById("sequentialFrames").checked;
+	var carryover = document.getElementById("previousAnnotations").checked;
+	
+	if (!sequential || !carryover) {
+		clearShapes();
+	}
+
+	retrieve_next_image(sequential);
 	reload_canvas();
 }
 
@@ -111,7 +117,10 @@ function submitLabels() {
 // Canvas ('canvas') asynchronous hooks
 //
 
+let drag = false;
+
 canvas.onmousedown = function(e) {
+	drag = false;
 	if (add_shape) {
 		added_shape.add_point(e.offsetX, e.offsetY);
 
@@ -136,31 +145,28 @@ canvas.onmousedown = function(e) {
 	canvas_down = true;
 }
 
-canvas.onmouseup = function(e) {
-	canvas_down = false;
-}
-
 canvas.onmousemove = function(e) {
+	drag = true;
 	if (canvas_down) {
 		if (mgr.replace_closest_point(e.offsetX, e.offsetY, 20)) {
 			reload_canvas();
 		}
 	} else {
 		hovering = mgr.mouseHover(e.offsetX, e.offsetY, reload_canvas);
-
 		canvas.style.cursor = hovering ? 'pointer' : 'crosshair';
-
 	}
 }
 
-canvas.onclick = function(e) {
-	var selection = mgr.select_shape(e.offsetX, e.offsetY);
+canvas.onmouseup = function(e) {
+	canvas_down = false;
 
-	if (selection) {
-		selection.show_dock(shapeDock);
+	if (!drag) {
+		var selection = mgr.select_shape(e.offsetX, e.offsetY);
+		if (selection) {
+			selection.show_dock(shapeDock);
+			reload_canvas();
+		}
 	}
-
-	reload_canvas();
 }
 
 //
