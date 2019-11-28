@@ -4,9 +4,54 @@ import uuid
 import json
 import glob
 
+from shapely.geometry import Polygon
+
 raw_root = 'data/raw'
 labaled_root = 'data/labeled'
 unlabeled_root = 'data/unlabeled'
+
+def calc_iou(poly1, poly2):
+    assert(len(poly1) == 4 and len(poly2) == 4)
+
+    a = Polygon([(p['x'], p['y']) for p in poly1])
+    b = Polygon([(p['x'], p['y']) for p in poly2])
+
+    return a.intersection(b).area / a.union(b).area
+
+'''
+ This is going to take some massaging to fine tune but this works... ok...
+'''
+def calculate_average_annotations(annotations, iou_thresh=.75):
+    shapes = {}
+    for annotation in annotations:
+        shape_map = {}
+
+        for shape in annotation['shapes']:
+            label = shape['label']
+            producer = shape['producer']
+            qualities = shape['qualifiers']
+            points = shape['points']
+
+            if label not in shape_map:
+                shape_map[label] = [points]
+            else:
+                shape_map[label].append(points)
+
+        annotation_list = {}
+        for label, proposed_points in shape_map.items():
+            sorted_points = [sort_points_cw(point_list) for point_list in proposed_points]
+
+            avg_points = []
+            n = 0
+            points_per_poly = 4
+
+            for shape_points in sorted_points:
+                for i in range(points_per_poly):
+                    avg_points[i] += shape_points[i]
+
+            if calc_iou(shape_map[label]['points'], sorted_points) >= iou_thresh:
+                shapes[label].merge(sorted_points)
+    return shapes
 
 def load_frame_annotations(uuid, frame, frame_dir=unlabeled_root):
     js = []
@@ -64,7 +109,6 @@ def convert_video_to_frames(video_path):
         i += 1
 
     return output
-
 '''
  Utils for server functionality
 '''
