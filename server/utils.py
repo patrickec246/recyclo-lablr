@@ -89,7 +89,6 @@ def process_video(video_path, frame_output_dir=unlabeled_root, delete_after_proc
         os.mkdir(annotation_path)
         frame_path = os.path.join(annotation_path, 'frame.jpg')
         cv2.imwrite(frame_path, frame)
-        create_annotation_template(annotation_path, i)
 
     metadata = get_video_metadata(video_path)
     metadata_path = os.path.join(path_name, 'metadata.json')
@@ -98,13 +97,6 @@ def process_video(video_path, frame_output_dir=unlabeled_root, delete_after_proc
         f.write(json.dumps(metadata))
 
     return path_name
-
-def create_annotation_template(annotation_path, frame):
-    template_json = {}
-    template_json['shapes'] = []
-
-    with open(os.path.join(annotation_path, 'frame.json'), 'w+') as f:
-        f.write(json.dumps(template_json))
 
 def convert_video_to_frames(video_path):
     if not os.path.exists(video_path):
@@ -149,6 +141,27 @@ def convert_img_to_base64(img_path, quality=70):
 
     return base64.b64encode(buf.read()).decode()
 
+def add_annotation(uuid, frame_no, js):
+    frame_dir = os.path.join(unlabeled_root, uuid, frame_no)
+
+    if not os.path.exists(frame_dir):
+        return str(False)
+
+    json_files = sorted(glob.glob(os.path.join(frame_dir, '*.json')))
+
+    if len(json_files) == 0:
+        new_annotation_file = os.path.join(frame_dir, '0.json')
+    else:
+        last_json_file = json_files[-1]
+        last_json_file_int = int(os.path.basename(last_json_file).split('.')[0])
+        new_annotation_file = os.path.join(frame_dir, '.'.join([str(last_json_file_int + 1), 'json']))
+
+    with open(new_annotation_file, 'w+') as f:
+        clean_json = json.loads(js)
+        f.write(json.dumps(clean_json, indent=4, sort_keys=True))
+
+    return str(True)
+
 def generate_image_labeling_json(last_img_uuid=None, last_frame=-1, sequential_img=False, load_server_polygons=False):
     def pick_next_image(last_img_uuid, last_frame, sequential_img, pseudo_sequential=False):
         if sequential_img:
@@ -158,8 +171,9 @@ def generate_image_labeling_json(last_img_uuid=None, last_frame=-1, sequential_i
                 last_img_uuid = random.choice([d for d in os.listdir(unlabeled_root) if not d.startswith('.')])
 
             target_path = os.path.join(unlabeled_root, last_img_uuid)
+            frame_path = os.path.join(target_path, str(last_frame))
 
-            if os.path.exists(os.path.join(target_path, str(last_frame))):
+            if os.path.exists(frame_path):
                 return os.path.join(target_path, str(last_frame), 'frame.jpg')
             else:
                 return pick_next_image(last_img_uuid, last_frame, False, True)
@@ -189,5 +203,3 @@ def generate_image_labeling_json(last_img_uuid=None, last_frame=-1, sequential_i
 '''
  Utils for server functionality
 '''
-
-print(generate_image_labeling_json())

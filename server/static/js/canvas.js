@@ -70,16 +70,22 @@ function addShape() {
 	}
 }
 
-function retrieve_next_image(sequential=false) {
+function retrieve_next_image(sequential=false, carryover=false) {
 	if (sequential) {
-		img_number += 1;
-	} else {
-		var max = 27;
-		img_number = Math.floor(Math.random() * Math.floor(max));
+		frame_no += 1;
 	}
 
-	current_img = 'imgs/' + img_number.toString().padStart(4, '0') + '.jpg';
-	console.log(current_img);
+	$.ajax({
+		url: '/request_image',
+		data: {
+			uuid : uuid,
+			frame : frame_no,
+			sequential : sequential,
+			annotations : carryover
+		},
+		success: set_canvas_image_from_json
+	});
+
 	reload_canvas();
 }
 
@@ -96,16 +102,27 @@ function skipImage() {
 		clearShapes();
 	}
 
-	retrieve_next_image(sequential);
+	retrieve_next_image(sequential, carryover);
 	reload_canvas();
 }
 
 function submitLabels() {
 	labels = mgr.formatLabels();
-	// post labels
+
 	console.log(labels);
 
+	$.ajax({
+		url: "/post_annotation",
+		type: "POST",
+		data: {
+			'uuid' : uuid,
+			'frame_no' : frame_no,
+			'annotation_data' : labels
+		}
+	});
+
 	stats.complete_image(shapes = mgr.num_shapes());
+
 	document.getElementById('imgCounter').innerText = stats.get_num_images() + ' images';
 	document.getElementById('mAPCounter').innerText = '+ ' + stats.mAPIncrease() + '% mAP';
 
@@ -204,6 +221,17 @@ document.getElementById('producerLabel').addEventListener("keyup", function(e) {
 	}
 });
 
+function set_canvas_image_from_json(result) {
+	json_result = JSON.parse(result);
+
+	uuid = json_result.uuid;
+	frame_no = parseInt(json_result.frame_no);
+	metadata = json_result.metadata;
+
+	base_img.src = "data:image/png;base64," + json_result.frame;
+	reload_canvas();
+}
+
 $("#sequentialFrames").change(function() {
 	$("#previousAnnotations").prop("disabled", !this.checked);
 });
@@ -211,15 +239,6 @@ $("#sequentialFrames").change(function() {
 $(document).ready(function() {
 	$.ajax({
 		url: "/request_image",
-		success: function(result) {
-			json_result = JSON.parse(result);
-
-			uuid = json_result.uuid;
-			frame_no = json_result.frame_no;
-			metadata = json_result.metadata;
-
-			base_img.src = "data:image/png;base64," + json_result.frame;
-			reload_canvas()
-		}
+		success: set_canvas_image_from_json
 	});
 });

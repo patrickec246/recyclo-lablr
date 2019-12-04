@@ -335,6 +335,7 @@ class ShapeManager {
 			output.push({
 				label:shape.label,
 				qualifiers:shape.qualifiers,
+				producer:shape.producer,
 				points:points,
 			});
 		});
