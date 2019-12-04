@@ -3,6 +3,11 @@ body {
 	padding: 0px;
 }
 
+html {
+	width: 100%;
+	height: 100%;
+}
+
 .canvas {
 	width:100%;
 	height:100%;
@@ -109,4 +114,144 @@ input::placeholder {
 .low-hr {
 	margin-top:5px;
 	margin-bottom:5px;
+}
+
+/* landing css */
+
+.page-dock {
+	width:100%;
+	height:100%;
+	background: rgb(34,193,195);
+	background: linear-gradient(0deg, rgba(34,193,195,1) 0%, rgba(253,187,45,1) 100%);
+}
+
+.leaf{
+  width:45px;
+  height:45px;
+  position:absolute;
+  background: url(../eco-leaf.png);
+  background-size: 100% 100%;
+  z-index:1;
+}
+
+.total-doc {
+	width: 600px;
+	height: 500px;
+	position:absolute;
+	top: 50%;
+	left: 50%;
+	margin: -250px 0 0 -300px;
+	z-index:10;
+}
+
+.spacing-doc {
+	width:600px;
+	height:350px;
+	background-color: rgba(240, 240, 240, .4);
+	box-shadow: 1px 1px 3px rgba(0, 0, 0, .1);
+	border-radius: .5em;
+	border: 1px solid rgba(255, 255, 255, .2);
+	background: rgb(233,233,233);
+	background: linear-gradient(0deg, rgba(200, 200, 200, .4) 0%, rgba(240, 240, 240, .4) 100%);
+	position:relative;
+}
+
+.site-info {
+	float:left;
+	width: 50%;
+	height:100%;
+}
+
+.site-buttons {
+	float:right;
+	width: 50%;
+	height:100%;
+	padding:10px;
+}
+
+.left-info {
+	border-left: 1px solid rgba(255, 255, 255, .2);
+}
+
+.btn {
+	margin-bottom:10px;
+}
+
+.btn : hover {
+	cursor:crosshair;
+}
+
+.custom-button-main {
+	border-radius:6px;
+	border: 1px solid #dcdcdc;
+	font-size: 14px;
+	padding: 5px 6px;
+	background-color: white;
+	cursor:pointer;
+	color: rgb(33, 174, 255);
+	margin-bottom:5px;
+	transition: background-color .4s;
+	font-size:.95em;
+}
+
+.donate-button {
+	color:green;
+}
+
+.custom-button-main:hover {
+	background-color: rgb(220, 220, 220);
+	color: rgb(85, 107, 231);
+}
+
+.button-descripton {
+	font-size:.6em;
+	font-weight: 400;
+	padding: 0px 5px 0px 5px;
+	color: rgb(80, 80, 80);
+	text-shadow: 1px 1px 2px rgba(255, 255, 255, .2);
+}
+
+.start-button {
+	color: rgb(6, 189, 42);
+	transition: color .4s;
+}
+
+.start-button:hover {
+	color:rgb(9, 158, 38);
+}
+
+.button-text {
+	width:100%;
+	height:auto;
+	color: rgb(33, 130, 200);
+	font-size:.75em;
+	font-family: Arial, Geneva, Helvetica, sans-serif;
+	position:absolute;
+	bottom:0px;
+	left:0px;
+	background-color:rgba(255, 255, 255, .9);
+	border-bottom-left-radius: 5px;
+	border-bottom-right-radius: 5px;
+	float:bottom;
+	padding:3px;
+}
+
+.info-dock {
+	font-size:.8em;
+	color:rgb(70, 70, 70);
+	padding:10px;
+}
+
+.info-dock-text {
+	color: rgb(240, 240, 240);
+	font-size:4em;
+	font-family: 'Titillium Web', sans-serif;
+	font-weight:900;
+	width:100%;
+	height:auto;
+	text-shadow: 2px 2px 8px rgba(100, 100, 100, .3);
+}
+
+.light-hr {
+	border: .5px solid rgba(255, 255, 255, .35);
 }
