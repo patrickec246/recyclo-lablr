@@ -3,6 +3,8 @@ import os
 import uuid
 import json
 import glob
+import pyexifinfo
+import datetime
 
 from shapely.geometry import Polygon
 
@@ -84,6 +86,12 @@ def process_video(video_path, frame_output_dir, delete_after_processing=False):
         cv2.imwrite(frame_path, frame)
         create_annotation_template(annotation_path, i)
 
+    metadata = get_video_metadata(video_path)
+    metadata_path = os.path.join(path_name, 'metadata.json')
+
+    with open(metadata_path, 'w+') as f:
+        f.write(json.dumps(metadata))
+
     return path_name
 
 def create_annotation_template(annotation_path, frame):
@@ -109,6 +117,24 @@ def convert_video_to_frames(video_path):
         i += 1
 
     return output
+
+def get_video_metadata(file_path):
+    exifinfo = pyexifinfo.get_json(file_path)[0]
+
+    gps = exifinfo['QuickTime:GPSCoordinates']
+    mktime = exifinfo['QuickTime:CreationDate']
+
+    args = gps.split(',')
+    latitude = args[0].strip()
+    longitude = args[1].strip()
+    elevation = args[2].strip()
+
+    utcmktime = datetime.datetime.strptime(mktime, '%Y:%m:%d %H:%M:%S%z').strftime("%a %b %d %Y %H:%M:%S %Z")
+
+    return {'latitude':latitude, 'longitude':longitude, 'elevation':elevation, 'creationtime':utcmktime}
+
 '''
  Utils for server functionality
 '''
+
+print(process_video('data/raw/IMG_1027.MOV', unlabeled_root))
