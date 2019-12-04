@@ -5,6 +5,8 @@ import json
 import glob
 import pyexifinfo
 import datetime
+import base64
+import random
 
 from shapely.geometry import Polygon
 
@@ -66,7 +68,7 @@ def load_frame_annotations(uuid, frame, frame_dir=unlabeled_root):
 
     return js
 
-def process_video(video_path, frame_output_dir, delete_after_processing=False):
+def process_video(video_path, frame_output_dir=unlabeled_root, delete_after_processing=False):
     frames = convert_video_to_frames(video_path)
 
     if not frames:
@@ -82,7 +84,7 @@ def process_video(video_path, frame_output_dir, delete_after_processing=False):
     for i, frame in frames:
         annotation_path = os.path.join(path_name, str(i))
         os.mkdir(annotation_path)
-        frame_path = os.path.join(annotation_path, '{}.jpg'.format(i))
+        frame_path = os.path.join(annotation_path, 'frame.jpg')
         cv2.imwrite(frame_path, frame)
         create_annotation_template(annotation_path, i)
 
@@ -98,7 +100,7 @@ def create_annotation_template(annotation_path, frame):
     template_json = {}
     template_json['shapes'] = []
 
-    with open(os.path.join(annotation_path, '{}.json'.format(frame)), 'w+') as f:
+    with open(os.path.join(annotation_path, 'frame.json'), 'w+') as f:
         f.write(json.dumps(template_json))
 
 def convert_video_to_frames(video_path):
@@ -132,6 +134,53 @@ def get_video_metadata(file_path):
     utcmktime = datetime.datetime.strptime(mktime, '%Y:%m:%d %H:%M:%S%z').strftime("%a %b %d %Y %H:%M:%S %Z")
 
     return {'latitude':latitude, 'longitude':longitude, 'elevation':elevation, 'creationtime':utcmktime}
+
+def convert_img_to_base64(img_path):
+    if not os.path.exists(img_path):
+        return None
+
+    with open(img_path, 'rb') as img:
+        return base64.b64encode(img.read())
+
+    return None
+
+def generate_image_labeling_json(last_img_uuid=None, last_frame=-1, sequential_img=False, load_server_polygons=False):
+    def pick_next_image(last_img_uuid, last_frame, sequential_img, pseudo_sequential=False):
+        if sequential_img:
+            last_frame += 1
+
+            if last_img_uuid is None:
+                last_img_uuid = random.choice([d for d in os.listdir(unlabeled_root) if not d.startswith('.')])
+
+            target_path = os.path.join(unlabeled_root, last_img_uuid)
+
+            if os.path.exists(os.path.join(target_path, str(last_frame))):
+                return os.path.join(target_path, str(last_frame), 'frame.jpg')
+            else:
+                return pick_next_image(last_img_uuid, last_frame, False, True)
+        else:
+            img_uuid = random.choice([d for d in os.listdir(unlabeled_root) if not d.startswith('.')])
+            target_path = os.path.join(unlabeled_root, img_uuid)
+            frames = sorted([d for d in os.listdir(target_path) if not d.startswith('.')])
+            target_frame = frames[0] if pseudo_sequential else random.choice(frames)
+            return os.path.join(target_path, target_frame, 'frame.jpg')
+    
+    get_frame = pick_next_image(last_img_uuid, last_frame, sequential_img)
+    frame_text = convert_img_to_base64(get_frame)
+
+    json_out = {'frame' : str(frame_text)}
+
+    if load_server_polygons:
+        frame_no_dir = os.path.dirname(get_frame)
+        uuid_dir = os.path.dirname(frame_no_dir)
+
+        frame_no = os.path.basename(frame_no_dir)
+        uuid = os.path.basename(uuid_dir)
+
+        json_out['metadata'] = calculate_average_annotations(load_frame_annotations(uuid, frame_no))
+
+    
+    return json.dumps(json_out)
 
 '''
  Utils for server functionality
