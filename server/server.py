@@ -31,7 +31,7 @@ def request_image():
 	annotations = request.args.get('annotations')
 
 	if any(element is None for element in [last_uuid, frame, sequential, annotations]):
-		return 'ERR: Invalid parameters'
+		return generate_image_labeling_json()
 
 	last_uuid = str(last_uuid)
 	frame = int(frame)

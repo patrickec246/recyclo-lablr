@@ -190,3 +190,4 @@ def generate_image_labeling_json(last_img_uuid=None, last_frame=-1, sequential_i
  Utils for server functionality
 '''
 
+print(generate_image_labeling_json())

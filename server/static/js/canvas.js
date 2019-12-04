@@ -2,9 +2,12 @@
 var canvas = document.getElementById('polyCanvas');
 var ctx = canvas.getContext("2d");
 var img_number = 1;
-var current_img = "imgs/0001.jpg";
 var mgr = new ShapeManager();
 var stats = new StatsManager();
+
+var uuid = "";
+var frame_no = -1;
+var metadata = ""
 
 // set load hooks
 window.onload = reload_canvas;
@@ -50,11 +53,6 @@ function update_selected_shape() {
 // redraw the canvas, background img, and polygons
 function reload_canvas() {
 	// draw bg img
-	if (last_img != current_img) {
-		last_img = current_img;
-		base_img.src = current_img;
-	}
-
 	ctx.drawImage(base_img, 0, 0, canvas.width - 200, canvas.height);
 
 	// draw polygons
@@ -208,4 +206,20 @@ document.getElementById('producerLabel').addEventListener("keyup", function(e) {
 
 $("#sequentialFrames").change(function() {
 	$("#previousAnnotations").prop("disabled", !this.checked);
-})
+});
+
+$(document).ready(function() {
+	$.ajax({
+		url: "/request_image",
+		success: function(result) {
+			json_result = JSON.parse(result);
+
+			uuid = json_result.uuid;
+			frame_no = json_result.frame_no;
+			metadata = json_result.metadata;
+
+			base_img.src = "data:image/png;base64," + json_result.frame;
+			reload_canvas()
+		}
+	});
+});
