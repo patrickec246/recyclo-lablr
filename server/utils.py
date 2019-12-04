@@ -136,5 +136,3 @@ def get_video_metadata(file_path):
 '''
  Utils for server functionality
 '''
-
-print(process_video('data/raw/IMG_1027.MOV', unlabeled_root))
