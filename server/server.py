@@ -1,4 +1,5 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request
+from utils import *
 
 app = Flask(__name__)
 
@@ -24,7 +25,20 @@ def request_annotation():
 
 @app.route('/request_image', methods=['GET'])
 def request_image():
-    return ''
+	last_uuid = request.args.get('uuid')
+	frame = request.args.get('frame')
+	sequential = request.args.get('sequential')
+	annotations = request.args.get('annotations')
+
+	if any(element is None for element in [last_uuid, frame, sequential, annotations]):
+		return 'ERR: Invalid parameters'
+
+	last_uuid = str(last_uuid)
+	frame = int(frame)
+	sequential = True if sequential.lower() == 'true' else False
+	annotations = True if annotations.lower() == 'true' else False
+
+	return generate_image_labeling_json(last_uuid, frame, sequential, annotations)
 
 @app.route('/post_annotation', methods=['GET', 'POST'])
 def post_annotation():
@@ -33,7 +47,6 @@ def post_annotation():
 @app.route('/trash_data')
 def request_trash_data():
 	return '{"total_trash": 1506, "total_recyclables":1294}'
-
 
 if __name__ == "__main__":
     app.run(debug=True)

@@ -8,6 +8,9 @@ import datetime
 import base64
 import random
 
+from io import StringIO, BytesIO
+from PIL import Image
+
 from shapely.geometry import Polygon
 
 raw_root = 'data/raw'
@@ -135,14 +138,16 @@ def get_video_metadata(file_path):
 
     return {'latitude':latitude, 'longitude':longitude, 'elevation':elevation, 'creationtime':utcmktime}
 
-def convert_img_to_base64(img_path):
+def convert_img_to_base64(img_path, quality=70):
     if not os.path.exists(img_path):
         return None
 
-    with open(img_path, 'rb') as img:
-        return base64.b64encode(img.read())
+    buf = BytesIO()
+    img = Image.open(img_path)
+    img.save(buf, format="JPEG", quality=quality)
+    buf.seek(0)
 
-    return None
+    return base64.b64encode(buf.read()).decode()
 
 def generate_image_labeling_json(last_img_uuid=None, last_frame=-1, sequential_img=False, load_server_polygons=False):
     def pick_next_image(last_img_uuid, last_frame, sequential_img, pseudo_sequential=False):
@@ -168,20 +173,20 @@ def generate_image_labeling_json(last_img_uuid=None, last_frame=-1, sequential_i
     get_frame = pick_next_image(last_img_uuid, last_frame, sequential_img)
     frame_text = convert_img_to_base64(get_frame)
 
-    json_out = {'frame' : str(frame_text)}
+    frame_no_dir = os.path.dirname(get_frame)
+    uuid_dir = os.path.dirname(frame_no_dir)
+    frame_no = os.path.basename(frame_no_dir)
+    uuid = os.path.basename(uuid_dir)
+
+    json_out = {'uuid' : uuid, 'frame_no' : frame_no}
+    json_out['frame'] = str(frame_text)
 
     if load_server_polygons:
-        frame_no_dir = os.path.dirname(get_frame)
-        uuid_dir = os.path.dirname(frame_no_dir)
-
-        frame_no = os.path.basename(frame_no_dir)
-        uuid = os.path.basename(uuid_dir)
-
         json_out['metadata'] = calculate_average_annotations(load_frame_annotations(uuid, frame_no))
 
-    
     return json.dumps(json_out)
 
 '''
  Utils for server functionality
 '''
+
