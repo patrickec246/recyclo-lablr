@@ -96,8 +96,8 @@ function clearShapes() {
 
 function skipImage() {
 	var sequential = document.getElementById("sequentialFrames").checked;
-	var carryover = document.getElementById("previousAnnotations").checked;
-	
+	var carryover = document.getElementById("loadAnnotations").checked;
+
 	if (!sequential || !carryover) {
 		clearShapes();
 	}
@@ -229,11 +229,80 @@ function set_canvas_image_from_json(result) {
 	metadata = json_result.metadata;
 
 	base_img.src = "data:image/png;base64," + json_result.frame;
+	mgr.load_from_json(metadata);
+
 	reload_canvas();
+}
+
+var hopped = null;
+var modal_step = -1;
+var modal_objs = ["#polyCanvas", '#addPoly', '#clearPoly',
+				  '#skipImage', '#submitLabels', '#loadPolys',
+				  '#requestSequential', '#prevAnnotations',
+				  '#labelStats'];
+
+function clear_hop() {
+	$(".hop-outer").hide();
+}
+
+function advance_modal() {
+	modal_step += 1;
+
+	if (modal_step < modal_objs.length) {
+		update_modal(modal_step);
+		hopped = $(modal_objs[modal_step]).hop();
+	} else {
+		clear_hop();
+	}
+}
+
+function reverse_modal() {
+	if (modal_step > 0) {
+		modal_step -= 1;
+	}
+
+	if (modal_step < modal_objs.length) {
+		update_modal(modal_step);
+		hopped = $(modal_objs[modal_step]).hop();
+	} else {
+		clear_hop();
+	}
+}
+
+function update_modal(step) {
+	$.ajax({
+		url: "/modal_step",
+		data: {
+			'step' : step
+		},
+		success: function(response) {
+			$('#modalWrapper').html(response);
+		}
+	});
+}
+
+function show_tutorial_modal() {
+	$("#tutorialModal").modal("show");
+}
+
+function close_tutorial_modal() {
+	clear_hop();
+	$("#tutorialModal").remove();
 }
 
 $("#sequentialFrames").change(function() {
 	$("#previousAnnotations").prop("disabled", !this.checked);
+});
+
+$(window).on('load', function() {
+	var visited_before = sessionStorage.getItem("hasVisited");
+
+	if (visited_before == 'false' || visited_before == false || visited_before == null) {
+		sessionStorage.setItem("hasVisited", true);
+		show_tutorial_modal();
+	}
+
+	sessionStorage.removeItem("hasVisited");
 });
 
 $(document).ready(function() {

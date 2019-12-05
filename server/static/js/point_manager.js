@@ -358,6 +358,12 @@ class ShapeManager {
 
 		return hoverEvent;
 	}
+
+	load_from_json(js) {
+		this.clear_shapes();
+
+		console.log(js);
+	}
 }
 
 class StatsManager {

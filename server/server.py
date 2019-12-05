@@ -19,9 +19,10 @@ def render_donate_page():
 def render_about_page():
     return render_template('about.html')
 
-@app.route('/request_annotation', methods=['GET'])
-def request_annotation():
-    return ''
+@app.route('/modal_step')
+def retrieve_modal_step():
+    step = int(request.args.get('step'))
+    return render_template('modal_steps/step{}.html'.format(step))
 
 @app.route('/request_image', methods=['GET'])
 def request_image():

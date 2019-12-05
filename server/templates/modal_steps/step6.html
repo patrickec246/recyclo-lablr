@@ -1,0 +1,16 @@
+<div class="modal-content">
+  <div class="modal-header">
+    <h4 class="modal-title" id="tutorialModalLabel">Option: Request In-Order Frames</h4>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+  </div>
+  <div class="modal-body" id="modalBody">
+     By default, you will be served a random frame from our list of frames that have not been sufficiently labeled yet. <br/><br/>
+     However, if you select <b>'Request Sequential Frames'</b> you will be served frames in the same sequence. This often reduces the amount of work required to update labels since
+     sequential frames are usually similar and require only minor adjustments to polygons. 
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-danger" onclick='reverse_modal()'>Back</button>
+    <button type="button" class="btn btn-primary" onclick='advance_modal()'>Next</button>
+    <button type="button" class="btn btn-success" onclick='close_tutorial_modal()'>Finish</button>
+  </div>
+</div>
