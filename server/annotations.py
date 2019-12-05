@@ -55,7 +55,7 @@ class Annotation(object):
 		iou = self.iou(other)
 		return iou
 
-# used once per frame
+# TODO: Fix this up
 class AnnotationAggregator(object):
 	def __init__(self):
 		self.default_path = unlabeled_root
@@ -81,11 +81,4 @@ class AnnotationAggregator(object):
 		if self.annotations is None:
 			return None
 
-		# this is ~ O(n^5) lmao wtf
-		# we should try to make this better in the future
-		for ann1 in self.annotations:
-			for label in self.annotations[ann1]:
-				for ann2 in [x for x in self.annotations if x != ann1]:
-					#print(ann1, ann2)
-					pass
-		return '{}'
+		return json.dumps(self.annotations[0])

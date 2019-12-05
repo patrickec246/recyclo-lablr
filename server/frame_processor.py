@@ -39,10 +39,10 @@ def complete_saturated_frames():
 
 		json_obj = {}
 		json_obj['labels'] = aggregated_label
-		for k,v in read_video_metadata(uuid).items():
-			json_obj[k] = v
 		json_obj['img_data'] = convert_img_to_base64(os.path.join(frame['dir'], 'frame.jpg'), quality=100)
 		json_obj['src_id'] = uuid
+		for k,v in read_video_metadata(uuid).items():
+			json_obj[k] = v
 
 		completed_frame = json.dumps(json_obj, indent=4, sort_keys=True)
 

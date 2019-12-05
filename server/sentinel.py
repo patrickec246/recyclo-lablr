@@ -60,9 +60,3 @@ class ServerSentinel(object):
 
     def update_stats(self):
         save_labeled_stats(stats.frames_labeled, stats.total_labels)
-
-    def sync_start_sentinel(self):
-        pass
-
-#sentinel = ServerSentinel()
-#sentinel.sync_start_sentinel()
