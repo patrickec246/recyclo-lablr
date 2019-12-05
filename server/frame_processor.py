@@ -56,7 +56,12 @@ def complete_saturated_frames():
 			f.write(completed_frame)
 
 def cleanup_completed_videos():
+	videos = []
+
 	for file in glob.glob(os.path.join(unlabeled_root, '*', '')):
 		dir_files = glob.glob(os.path.join(file, '*'))
 		if len(dir_files) == 1 and os.path.basename(dir_files[0]) == 'metadata.json':
 			shutil.rmtree(file)
+		videos.append(file)
+
+	return videos

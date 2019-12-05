@@ -8,6 +8,8 @@ import datetime
 import base64
 import random
 
+from settings import *
+
 from io import StringIO, BytesIO
 from PIL import Image
 
@@ -65,6 +67,9 @@ def load_frame_annotations(uuid, frame, frame_dir=unlabeled_root):
 
     return js
 
+def pick_random_video():
+    return random.choice([x for x in glob.glob(os.path.join(raw_root, '*')) if 'MOV' in x])
+
 def process_video(video_path, frame_output_dir=unlabeled_root, delete_after_processing=False):
     frames = convert_video_to_frames(video_path)
 
@@ -88,7 +93,10 @@ def process_video(video_path, frame_output_dir=unlabeled_root, delete_after_proc
     metadata_path = os.path.join(path_name, 'metadata.json')
 
     with open(metadata_path, 'w+') as f:
-        f.write(json.dumps(metadata))
+        f.write(json.dumps(metadata, indent=4, sort_keys=True))
+
+    if delete_after_processing:
+        os.remove(video_path)
 
     return path_name
 
@@ -162,6 +170,9 @@ def add_annotation(uuid, frame_no, js):
     with open(new_annotation_file, 'w+') as f:
         clean_json = json.loads(js)
         f.write(json.dumps(clean_json, indent=4, sort_keys=True))
+        print(len(clean_json))
+        stats.increment_frames_labeled()
+        stats.increment_total_labels(len(clean_json))
 
     return str(True)
 
@@ -201,7 +212,10 @@ def generate_image_labeling_json(last_img_uuid=None, last_frame=-1, sequential_i
     if load_server_polygons:
         json_out['metadata'] = calculate_average_annotations(load_frame_annotations(uuid, frame_no))
 
-    return json.dumps(json_out)
+    return json.dumps(json_out, indent=4, sort_keys=True)
+
+def available_frames():
+    return len([f[0] for r,d,f in os.walk(unlabeled_root) if 'jpg' in f[0]])
 
 def load_labeled_stats():
     labeled_stats_file = os.path.join(data_root, 'stats.json')
@@ -215,7 +229,11 @@ def save_labeled_stats(total_images, total_labels):
     labeled_stats_file = os.path.join(data_root, 'stats.json')
 
     with open(labeled_stats_file, 'w') as f:
-        f.write(json.dumps({'total_images' : total_images, 'total_labels' : total_labels}))
+        f.write(json.dumps({'total_images' : total_images, 'total_labels' : total_labels}, indent=4, sort_keys=True))
+
+start_stats = load_labeled_stats()
+stats.set_total_labels(start_stats['total_labels'])
+stats.set_frames_labeled(start_stats['total_images'])
 
 '''
  Utils for server functionality

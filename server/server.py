@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request
 from utils import *
+from sentinel import *
 
 app = Flask(__name__)
 
@@ -54,4 +55,7 @@ def request_trash_data():
     return json.dumps(load_labeled_stats(), indent=4, sort_keys=True)
 
 if __name__ == "__main__":
+    sentinel = ServerSentinel()
+    sentinel.run()
+
     app.run(debug=True)
