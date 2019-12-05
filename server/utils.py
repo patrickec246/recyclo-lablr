@@ -11,24 +11,18 @@ import random
 from io import StringIO, BytesIO
 from PIL import Image
 
-from shapely.geometry import Polygon
-
+data_root = 'data'
 raw_root = 'data/raw'
-labaled_root = 'data/labeled'
+labeled_root = 'data/labeled'
 unlabeled_root = 'data/unlabeled'
-
-def calc_iou(poly1, poly2):
-    assert(len(poly1) == 4 and len(poly2) == 4)
-
-    a = Polygon([(p['x'], p['y']) for p in poly1])
-    b = Polygon([(p['x'], p['y']) for p in poly2])
-
-    return a.intersection(b).area / a.union(b).area
 
 '''
  This is going to take some massaging to fine tune but this works... ok...
 '''
 def calculate_average_annotations(annotations, iou_thresh=.75):
+    if len(annotations) > 0:
+        return annotations[0]
+
     shapes = {}
     for annotation in annotations:
         shape_map = {}
@@ -130,6 +124,15 @@ def get_video_metadata(file_path):
 
     return {'latitude':latitude, 'longitude':longitude, 'elevation':elevation, 'creationtime':utcmktime}
 
+def read_video_metadata(uuid):
+    metadata_file = os.path.join(unlabeled_root, uuid, 'metadata.json')
+
+    if not os.path.exists(metadata_file):
+        return None
+
+    with open(metadata_file) as f:
+        return json.loads(f.read())
+
 def convert_img_to_base64(img_path, quality=70):
     if not os.path.exists(img_path):
         return None
@@ -199,6 +202,20 @@ def generate_image_labeling_json(last_img_uuid=None, last_frame=-1, sequential_i
         json_out['metadata'] = calculate_average_annotations(load_frame_annotations(uuid, frame_no))
 
     return json.dumps(json_out)
+
+def load_labeled_stats():
+    labeled_stats_file = os.path.join(data_root, 'stats.json')
+
+    with open(labeled_stats_file, 'r') as f:
+        return json.loads(f.read())
+
+    return None
+
+def save_labeled_stats(total_images, total_labels):
+    labeled_stats_file = os.path.join(data_root, 'stats.json')
+
+    with open(labeled_stats_file, 'w') as f:
+        f.write(json.dumps({'total_images' : total_images, 'total_labels' : total_labels}))
 
 '''
  Utils for server functionality

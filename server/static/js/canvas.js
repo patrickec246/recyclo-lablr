@@ -302,7 +302,7 @@ $(window).on('load', function() {
 		show_tutorial_modal();
 	}
 
-	sessionStorage.removeItem("hasVisited");
+	//sessionStorage.removeItem("hasVisited");
 });
 
 $(document).ready(function() {

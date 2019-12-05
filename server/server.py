@@ -49,9 +49,9 @@ def post_annotation():
 
     return add_annotation(uuid, frame_no, annotation_json)
 
-@app.route('/trash_data')
+@app.route('/stats')
 def request_trash_data():
-    return '{"total_trash": 1506, "total_recyclables":1294}'
+    return json.dumps(load_labeled_stats(), indent=4, sort_keys=True)
 
 if __name__ == "__main__":
     app.run(debug=True)

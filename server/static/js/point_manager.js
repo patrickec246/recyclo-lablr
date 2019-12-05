@@ -362,6 +362,8 @@ class ShapeManager {
 	load_from_json(js) {
 		this.clear_shapes();
 
+		// TODO implement this!
+
 		console.log(js);
 	}
 }

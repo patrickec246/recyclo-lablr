@@ -22,13 +22,13 @@ function R(min,max) {return min+Math.random()*(max-min)};
 
 // Statistics
 function update_trash_statistics() {
-	$.get("/trash_data", function(data) {
+	$.get("/stats", function(data) {
 		d = JSON.parse(data);
-		$("#labeledPiecesText").text(d.total_trash);
-		$("#recyclablePiecesText").text(d.total_recyclables);
+		$("#totalImages").text(d.total_images);
+		$("#totalLabels").text(d.total_labels);
 	});
 }
 
-setInterval(update_trash_statistics, 3000);
+setInterval(update_trash_statistics, 2000);
 
 $(document).ready(update_trash_statistics);
