@@ -1,0 +1,15 @@
+[2019-12-05 21:06:03,745] [INFO] - Received image request None, None, None
+[2019-12-05 21:06:12,444] [INFO] - Received image request 4ea68c7ee4af439589f70a25bf5f4d00, 44, false
+[2019-12-05 21:06:15,186] [INFO] - Received image request 4ea68c7ee4af439589f70a25bf5f4d00, 45, false
+[2019-12-05 21:06:17,023] [INFO] - Received image request 4ea68c7ee4af439589f70a25bf5f4d00, 45, false
+[2019-12-05 21:06:17,711] [INFO] - Received image request 4ea68c7ee4af439589f70a25bf5f4d00, 42, false
+[2019-12-05 21:06:18,267] [INFO] - Received image request 4ea68c7ee4af439589f70a25bf5f4d00, 43, false
+[2019-12-05 21:06:18,957] [INFO] - Received image request 4ea68c7ee4af439589f70a25bf5f4d00, 31, false
+[2019-12-05 21:06:19,887] [INFO] - Received image request 4ea68c7ee4af439589f70a25bf5f4d00, 47, false
+[2019-12-05 21:07:12,505] [INFO] - Received image request 4ea68c7ee4af439589f70a25bf5f4d00, 35, false
+[2019-12-05 21:07:12,507] [INFO] - Wrote annotation for uuid: 4ea68c7ee4af439589f70a25bf5f4d00, frame: 35
+[2019-12-05 21:17:50,581] [INFO] - Received image request None, None, None
+[2019-12-05 21:17:55,826] [INFO] - Received image request 4ea68c7ee4af439589f70a25bf5f4d00, 41, false
+[2019-12-05 21:17:55,827] [INFO] - Wrote annotation for uuid: 4ea68c7ee4af439589f70a25bf5f4d00, frame: 41
+[2019-12-05 21:18:29,947] [INFO] - Received image request 4ea68c7ee4af439589f70a25bf5f4d00, 8, false
+[2019-12-05 21:18:29,947] [INFO] - Wrote annotation for uuid: 4ea68c7ee4af439589f70a25bf5f4d00, frame: 8

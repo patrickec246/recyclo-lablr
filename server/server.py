@@ -1,6 +1,10 @@
+import sys
+sys.path.insert(0, './src')
+
 from flask import Flask, render_template, request
 from utils import *
 from sentinel import *
+from settings import *
 
 app = Flask(__name__)
 
@@ -31,6 +35,8 @@ def request_image():
     frame = request.args.get('frame')
     sequential = request.args.get('sequential')
     annotations = request.args.get('annotations')
+
+    log('Received image request {}, {}, {}'.format(last_uuid, frame, annotations))
 
     if any(element is None for element in [last_uuid, frame, sequential, annotations]):
         return generate_image_labeling_json()

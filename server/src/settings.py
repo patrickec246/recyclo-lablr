@@ -1,7 +1,20 @@
 import logging
+from logging import FileHandler, Formatter
+
 import threading
 
-logging.basicConfig(filename='server.log', level=logging.INFO, format='[%(asctime)s] [%(levelname)s] - %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
+SERVER_LOG_FILE = 'logs/server.log'
+
+log_file_handler = FileHandler(SERVER_LOG_FILE)
+log_file_handler.setLevel(logging.INFO)
+log_file_handler.setFormatter(Formatter('[%(asctime)s] [%(levelname)s] - %(message)s'))
+
+logger = logging.getLogger('recyclr.server')
+logger.setLevel(logging.INFO)
+logger.addHandler(log_file_handler)
+
+def log(log_msg):
+	logger.info(log_msg)
 
 class StatsCounter(object):
 	def __init__(self):

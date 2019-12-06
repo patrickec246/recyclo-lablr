@@ -13,6 +13,7 @@ from settings import *
 from io import StringIO, BytesIO
 from PIL import Image
 
+logs_root = 'logs'
 data_root = 'data'
 raw_root = 'data/raw'
 labeled_root = 'data/labeled'
@@ -71,6 +72,7 @@ def pick_random_video():
     return random.choice([x for x in glob.glob(os.path.join(raw_root, '*')) if 'MOV' in x])
 
 def process_video(video_path, frame_output_dir=unlabeled_root, delete_after_processing=False):
+    log('Attempting to process video {}'.format(video_path))
     frames = convert_video_to_frames(video_path)
 
     if not frames:
@@ -96,6 +98,7 @@ def process_video(video_path, frame_output_dir=unlabeled_root, delete_after_proc
         f.write(json.dumps(metadata, indent=4, sort_keys=True))
 
     if delete_after_processing:
+        log('Converted {} to individual frames. Deleting source video')
         os.remove(video_path)
 
     return path_name
@@ -105,6 +108,8 @@ def convert_video_to_frames(video_path):
         return None
 
     output = []
+
+    log('Converting video to frames: {}'.format(video_path))
 
     video = cv2.VideoCapture(video_path)
     r, frame = video.read()
@@ -170,9 +175,9 @@ def add_annotation(uuid, frame_no, js):
     with open(new_annotation_file, 'w+') as f:
         clean_json = json.loads(js)
         f.write(json.dumps(clean_json, indent=4, sort_keys=True))
-        print(len(clean_json))
         stats.increment_frames_labeled()
         stats.increment_total_labels(len(clean_json))
+        log('Wrote annotation for uuid: {}, frame: {}'.format(uuid, frame_no))
 
     return str(True)
 
@@ -218,7 +223,7 @@ def available_frames():
     return len([f[0] for r,d,f in os.walk(unlabeled_root) if 'jpg' in f[0]])
 
 def load_labeled_stats():
-    labeled_stats_file = os.path.join(data_root, 'stats.json')
+    labeled_stats_file = os.path.join(logs_root, 'stats.json')
 
     with open(labeled_stats_file, 'r') as f:
         return json.loads(f.read())
@@ -226,7 +231,7 @@ def load_labeled_stats():
     return None
 
 def save_labeled_stats(total_images, total_labels):
-    labeled_stats_file = os.path.join(data_root, 'stats.json')
+    labeled_stats_file = os.path.join(logs_root, 'stats.json')
 
     with open(labeled_stats_file, 'w') as f:
         f.write(json.dumps({'total_images' : total_images, 'total_labels' : total_labels}, indent=4, sort_keys=True))

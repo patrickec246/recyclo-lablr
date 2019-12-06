@@ -14,14 +14,14 @@ class TaskTimer(threading.Timer):
 
 class ServerSentinel(object):
     def __init__(self):
-        self.label_threshold = 10
+        self.label_threshold = 5
         self.max_unlabeled_imgs = 30
         self.max_frames_per_pass = 10
 
         self.video_cleanup_rate = 20
         self.frame_cleanup_rate = 10
         self.process_video_rate = 5
-        self.update_stats_rate = 1
+        self.update_stats_rate = 5
 
     def run(self):
         self.video_cleanup_task = TaskTimer(self.video_cleanup_rate, self.video_cleanup_sentinel)
@@ -52,10 +52,11 @@ class ServerSentinel(object):
         cleanup_completed_videos()
 
     def frame_cleanup_sentinel(self):
-        complete_saturated_frames()
+        complete_saturated_frames(self.label_threshold)
 
     def process_video_sentinel(self):
         if available_frames() < self.max_unlabeled_imgs:
+            log('Generating more frames to fill space')
             process_video(pick_random_video())
 
     def update_stats(self):
