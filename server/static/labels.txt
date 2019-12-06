@@ -1,59 +1,61 @@
-glass bottle
-plastic bottle
-plastic bottle cap
-disposable lighter
-newspaper
+
+
 paper
 flier
+other
+napkin
+ziptie
+plastic
+battery
 beer can
 soda can
-energy drink can
-aluminum can
-glass wine bottle
-paper coffee cup
-plastic coffee cup
-paper coffee cup sleeve
-plastic food wrapper
-plastic wrap
-plastic
 solo cup
-plastic cup
-plastic food cup
-plastic food trap
-disposable razor
+envelope
+newspaper
 paper bag
-plastic bag
 cardboard
-cardboard box
+glass jar
+styrofoam
+plastic cup
+plastic bag
 milk carton
+plastic lid
+ziplock bag
+paper towel
+plastic jar
+paper plate
+glass bottle
+aluminum can
+plastic wrap
 paper carton
 plastic fork
+plastic bowl
+toilet paper
+plastic tray
+cardboard box
 plastic knife
 plastic spoon
-plastic bowl
-napkin
-plastic coffee cup lid
-plastic lid
-envelope
-ziplock bag
-toilet paper
-paper towel
-glass jar
-plastic jar
 plastic label
-plastic container
-toothpaste tube
-paper plate
-ziptie
-styrofoam
-plastic tray
-plastic food tray
 plastic straw
-plastic spray bottle
-2 liter bottle
 candy wrapper
+plastic bottle
+2 liter bottle
+toothpaste tube
+energy drink can
+paper coffee cup
+plastic food cup
+disposable razor
 plastic cap seal
-battery
-plastic toothbrush
+glass wine bottle
+plastic food trap
+plastic container
+plastic food tray
 wooden toothbrush
-other
+plastic bottle cap
+disposable lighter
+plastic coffee cup
+plastic toothbrush
+plastic food wrapper
+plastic spray bottle
+plastic coffee cup lid
+paper coffee cup sleeve
