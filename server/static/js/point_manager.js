@@ -50,7 +50,9 @@ class Shape {
 		document.getElementById('typeLabel').value = this.label;
 		document.getElementById('featuresLabel').value = this.qualifiers;
 		document.getElementById('producerLabel').value = this.producer;
-		document.getElementById('typeLabel').focus();
+		window.setTimeout(function () {
+            document.getElementById('typeLabel').focus();
+        }, 0);
 	}
 
 	num_points() {

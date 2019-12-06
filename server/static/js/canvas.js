@@ -20,6 +20,7 @@ var last_img = "";
 var canvas_down = false;
 var added_shape = null;
 var add_shape = false;
+var canExit = true;
 
 // when the canvas image is updated, redraw the image
 base_img.onload = function() {
@@ -42,7 +43,7 @@ function delete_selected_shape() {
 }
 
 function update_selected_shape() {
-	if (selected_shape) {
+	if (label_input_valid() && selected_shape) {
 		selected_shape.label = document.getElementById('typeLabel').value;
 		shapeDock.style.display = 'none';
 		mgr.deselect_shapes();
@@ -201,24 +202,22 @@ closeBtn.onclick = function(e) {
 	reload_canvas();
 }
 
-savePoint = document.getElementById('savePoint');
+var savePoint = document.getElementById('savePoint');
+var saveableIds = ['typeLabel', 'featuresLabel', 'producerLabel']
 
-document.getElementById('typeLabel').addEventListener("keyup", function(e) {
-	if (e.keyCode == 13) {
-		savePoint.click();
-	}
-});
-
-document.getElementById('featuresLabel').addEventListener("keyup", function(e) {
-	if (e.keyCode == 13) {
-		savePoint.click();
-	}
-});
-
-document.getElementById('producerLabel').addEventListener("keyup", function(e) {
-	if (e.keyCode == 13) {
-		savePoint.click();
-	}
+saveableIds.forEach(id => {
+	document.getElementById(id).addEventListener("keyup", function(e) {
+		if (e.keyCode == 13 && label_input_valid()) {
+			console.log(canExit);
+			if (!canExit) {
+				shade_input_label($("#typeLabel"));
+				$("#typeLabel").autocomplete('close');
+				canExit = true;
+			} else {
+				savePoint.click();
+			}
+		}
+	});
 });
 
 function set_canvas_image_from_json(result) {
@@ -310,4 +309,29 @@ $(document).ready(function() {
 		url: "/request_image",
 		success: set_canvas_image_from_json
 	});
+});
+
+var x = []
+
+$.get("labels.txt", function(data) {
+	x = data.split('\n')
+	$("#typeLabel").autocomplete({
+		source: x,
+		autoFocus: true,
+		open: function() { canExit = false; },
+		close: function() { canExit = false; }
+	});
+});
+
+function label_input_valid() {
+	input_val = $("#typeLabel").val();
+	return input_val && x.includes(input_val);
+}
+
+function shade_input_label(e) {
+	e.css('background-color', (label_input_valid() ? 'rgba(10, 224, 69, .1)' : 'rgba(250, 67, 46, .1)'));
+}
+
+$("#typeLabel").on('input', function() {
+	shade_input_label($(this));
 });

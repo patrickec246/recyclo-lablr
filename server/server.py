@@ -60,6 +60,12 @@ def post_annotation():
 def request_trash_data():
     return json.dumps(load_labeled_stats(in_memory=True), indent=4, sort_keys=True)
 
+@app.route('/labels.txt')
+def get_labels():
+    with open('static/labels.txt', 'r') as f:
+        return f.read()
+    return ''
+
 if __name__ == "__main__":
     sentinel = ServerSentinel()
     sentinel.run()
