@@ -222,11 +222,13 @@ def generate_image_labeling_json(last_img_uuid=None, last_frame=-1, sequential_i
 def available_frames():
     return len([f[0] for r,d,f in os.walk(unlabeled_root) if 'jpg' in f[0]])
 
-def load_labeled_stats():
-    labeled_stats_file = os.path.join(logs_root, 'stats.json')
-
-    with open(labeled_stats_file, 'r') as f:
-        return json.loads(f.read())
+def load_labeled_stats(in_memory=True):
+    if in_memory:
+        return {'total_images' : stats.frames_labeled, 'total_labels' : stats.total_labels}
+    else:
+        labeled_stats_file = os.path.join(logs_root, 'stats.json')
+        with open(labeled_stats_file, 'r') as f:
+            return json.loads(f.read())
 
     return None
 
@@ -236,7 +238,7 @@ def save_labeled_stats(total_images, total_labels):
     with open(labeled_stats_file, 'w') as f:
         f.write(json.dumps({'total_images' : total_images, 'total_labels' : total_labels}, indent=4, sort_keys=True))
 
-start_stats = load_labeled_stats()
+start_stats = load_labeled_stats(in_memory=False)
 stats.set_total_labels(start_stats['total_labels'])
 stats.set_frames_labeled(start_stats['total_images'])
 

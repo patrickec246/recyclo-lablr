@@ -58,7 +58,7 @@ def post_annotation():
 
 @app.route('/stats')
 def request_trash_data():
-    return json.dumps(load_labeled_stats(), indent=4, sort_keys=True)
+    return json.dumps(load_labeled_stats(in_memory=True), indent=4, sort_keys=True)
 
 if __name__ == "__main__":
     sentinel = ServerSentinel()
