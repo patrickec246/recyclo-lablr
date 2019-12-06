@@ -35,7 +35,8 @@ class Shape {
 		if (this.points.length >= 4) return false;
 
 		this.points.push({x:x, y:y, angle: 0});
-		this.sort_points();
+
+        if (this.points.length == 4) this.sort_points();
 
 		return true;
 	}
@@ -271,7 +272,7 @@ class ShapeManager {
 		})
 	}
 
-	draw_shape(shape, ctx) {
+	draw_shape(shape, ctx, mouse_x=-1, mouse_y=-1) {
 		// draw polygon
 
 		ctx.beginPath();
@@ -288,6 +289,10 @@ class ShapeManager {
 			cx += point.x;
 			cy += point.y;
 		}
+
+        if (mouse_x > 0 && mouse_y > 0) {
+            ctx.lineTo(mouse_x, mouse_y);
+        }
 
 		ctx.closePath();
 		ctx.fillStyle = shape.selected ? 'rgba(0, 0, 0, .3)' : 'rgba(0, 0, 0, .15)';

@@ -162,6 +162,11 @@ canvas.onmousedown = function(e) {
 }
 
 canvas.onmousemove = function(e) {
+	if (added_shape && added_shape.points.length > 0) {
+		reload_canvas();
+		mgr.draw_shape(added_shape, ctx, e.offsetX, e.offsetY);
+	}
+
 	drag = true;
 	if (canvas_down) {
 		if (mgr.replace_closest_point(e.offsetX, e.offsetY, 20)) {
@@ -176,7 +181,7 @@ canvas.onmousemove = function(e) {
 canvas.onmouseup = function(e) {
 	canvas_down = false;
 
-	if (!drag) {
+	if (!drag && !added_shape) {
 		var selection = mgr.select_shape(e.offsetX, e.offsetY);
 		if (selection) {
 			selection.show_dock(shapeDock);
@@ -208,7 +213,6 @@ var saveableIds = ['typeLabel', 'featuresLabel', 'producerLabel']
 saveableIds.forEach(id => {
 	document.getElementById(id).addEventListener("keyup", function(e) {
 		if (e.keyCode == 13 && label_input_valid()) {
-			console.log(canExit);
 			if (!canExit) {
 				shade_input_label($("#typeLabel"));
 				$("#typeLabel").autocomplete('close');
