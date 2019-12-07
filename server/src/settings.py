@@ -1,10 +1,12 @@
 import logging
 from logging import FileHandler, Formatter
 
+import os
 import threading
 
 SERVER_LOG_FILE = 'logs/server.log'
 
+os.makedirs(os.path.dirname(SERVER_LOG_FILE), exist_ok=True)
 log_file_handler = FileHandler(SERVER_LOG_FILE)
 log_file_handler.setLevel(logging.INFO)
 log_file_handler.setFormatter(Formatter('[%(asctime)s] [%(levelname)s] - %(message)s'))

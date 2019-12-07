@@ -69,7 +69,8 @@ def load_frame_annotations(uuid, frame, frame_dir=unlabeled_root):
     return js
 
 def pick_random_video():
-    return random.choice([x for x in glob.glob(os.path.join(raw_root, '*')) if 'MOV' in x])
+    valid_videos = [x for x in glob.glob(os.path.join(raw_root, '*')) if 'MOV' in x]
+    return random.choice(valid_videos) if len(valid_videos) > 0 else None
 
 def process_video(video_path, frame_output_dir=unlabeled_root, delete_after_processing=False):
     log('Attempting to process video {}'.format(video_path))
@@ -227,15 +228,18 @@ def load_labeled_stats(in_memory=True):
         return {'total_images' : stats.frames_labeled, 'total_labels' : stats.total_labels}
     else:
         labeled_stats_file = os.path.join(logs_root, 'stats.json')
-        with open(labeled_stats_file, 'r') as f:
-            return json.loads(f.read())
+        if os.path.exists(labeled_stats_file):
+            with open(labeled_stats_file, 'r') as f:
+                return json.loads(f.read())
+        else:
+            save_labeled_stats(0, 0)
 
-    return None
+    return {'total_images' : 0, 'total_labels' : 0}
 
 def save_labeled_stats(total_images, total_labels):
     labeled_stats_file = os.path.join(logs_root, 'stats.json')
 
-    with open(labeled_stats_file, 'w') as f:
+    with open(labeled_stats_file, 'w+') as f:
         f.write(json.dumps({'total_images' : total_images, 'total_labels' : total_labels}, indent=4, sort_keys=True))
 
 start_stats = load_labeled_stats(in_memory=False)

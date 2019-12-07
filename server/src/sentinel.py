@@ -57,7 +57,9 @@ class ServerSentinel(object):
     def process_video_sentinel(self):
         if available_frames() < self.max_unlabeled_imgs:
             log('Generating more frames to fill space')
-            process_video(pick_random_video())
+            video = pick_random_video()
+            if video:
+                process_video(video)
 
     def update_stats(self):
         save_labeled_stats(stats.frames_labeled, stats.total_labels)
