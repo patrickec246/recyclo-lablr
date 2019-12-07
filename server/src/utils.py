@@ -148,7 +148,7 @@ def read_video_metadata(uuid):
         return json.loads(f.read())
 
 def convert_img_to_base64(img_path, quality=70):
-    if not os.path.exists(img_path):
+    if img_path is None or not os.path.exists(img_path):
         return None
 
     buf = BytesIO()
@@ -198,13 +198,20 @@ def generate_image_labeling_json(last_img_uuid=None, last_frame=-1, sequential_i
             else:
                 return pick_next_image(last_img_uuid, last_frame, False, True)
         else:
-            img_uuid = random.choice([d for d in os.listdir(unlabeled_root) if not d.startswith('.')])
+            available_uuids = [d for d in os.listdir(unlabeled_root) if not d.startswith('.')]
+            if len(available_uuids) == 0:
+                return None
+            img_uuid = random.choice(available_uuids)
             target_path = os.path.join(unlabeled_root, img_uuid)
             frames = sorted([d for d in os.listdir(target_path) if not d.startswith('.')])
             target_frame = frames[0] if pseudo_sequential else random.choice(frames)
             return os.path.join(target_path, target_frame, 'frame.jpg')
     
     get_frame = pick_next_image(last_img_uuid, last_frame, sequential_img)
+
+    if get_frame is None:
+        return json.dumps({'uuid' : '', 'frame_no' : '', 'frame' : '', 'metadata' : ''}, indent=4, sort_keys=True)
+
     frame_text = convert_img_to_base64(get_frame)
 
     frame_no_dir = os.path.dirname(get_frame)
@@ -221,7 +228,7 @@ def generate_image_labeling_json(last_img_uuid=None, last_frame=-1, sequential_i
     return json.dumps(json_out, indent=4, sort_keys=True)
 
 def available_frames():
-    return len([f[0] for r,d,f in os.walk(unlabeled_root) if 'jpg' in f[0]])
+    return len([f[0] for r,d,f in os.walk(unlabeled_root) if len(f) > 0 and 'jpg' in f[0]])
 
 def load_labeled_stats(in_memory=True):
     if in_memory:

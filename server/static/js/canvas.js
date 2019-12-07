@@ -227,6 +227,10 @@ saveableIds.forEach(id => {
 function set_canvas_image_from_json(result) {
 	json_result = JSON.parse(result);
 
+	if (!json_result.frame || !json_result.frame_no) {
+	    window.alert('ERROR: Invalid response :(');
+	    return;
+	}
 	uuid = json_result.uuid;
 	frame_no = parseInt(json_result.frame_no);
 	metadata = json_result.metadata;
