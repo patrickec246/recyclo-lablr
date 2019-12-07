@@ -28,7 +28,7 @@
 
     virtualenv recyclr
     source recyclr/venv/bin/activate
-    (venv) user@local $ pip -r requirements.txt
+    (venv) user@local $ ./setup.sh
     python server.py
 
 **Adding data to be labeled**
