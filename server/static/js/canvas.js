@@ -306,7 +306,6 @@ function set_canvas_image_from_json(result) {
 	json_result = JSON.parse(result);
 
 	if (!json_result.frame || !json_result.frame_no) {
-	    window.alert('ERROR: Invalid response :(');
 	    return;
 	}
 	uuid = json_result.uuid;
@@ -324,9 +323,8 @@ function set_canvas_image_from_json(result) {
 var hopped = null;
 var modal_step = -1;
 var modal_objs = ["#polyCanvas", '#addPoly', '#clearPoly',
-				  '#skipImage', '#submitLabels', '#loadPolys',
-				  '#requestSequential', '#prevAnnotations',
-				  '#labelStats'];
+				  '#skipFrame', '#submitLabels', '#settingsBtn',
+				  '#mapBtn', '#statsPanel'];
 
 function clear_hop() {
 	$(".hop-outer").hide();
