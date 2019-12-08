@@ -1,15 +1,15 @@
 <div class="modal-content">
   <div class="modal-header">
-    <h4 class="modal-title" id="tutorialModalLabel">Option: Keeping Previous Polygons</h4>
+    <h4 class="modal-title" id="tutorialModalLabel">Stats</h4>
     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
   </div>
   <div class="modal-body" id="modalBody">
-     As mentioned, sequential frames are generally similar. When you submit labels for one frame, this option will load the next frame into the canvas, but keep the previously submitted labels. <br/><br/>
-     This generally leads to less time spent labeling since only minor tweaks are generally needed.
+     <b>recyclr.net</b> is a collaborative project where every piece of data counts.<br/><br/>
+     Here you can see how much you've contributed to the project and how many labels have been submitted in total.
   </div>
   <div class="modal-footer">
     <button type="button" class="btn btn-danger" onclick='reverse_modal()'>Back</button>
-    <button type="button" class="btn btn-primary" onclick='advance_modal()'>Next</button>
+    <button type="button" class="btn btn-primary" onclick='advance_modal()' disabled>Next</button>
     <button type="button" class="btn btn-success" onclick='close_tutorial_modal()'>Finish</button>
   </div>
 </div>

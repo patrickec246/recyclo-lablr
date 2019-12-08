@@ -1,5 +1,6 @@
 **recyclr** serves images from a server and provides a labeling interface for crowdsourcing detection.
-  
+
+live demo: http://3.136.154.137/  
 
 ![demo](static/demo.png)
 
