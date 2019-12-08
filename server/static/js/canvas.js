@@ -7,7 +7,8 @@ var stats = new StatsManager();
 
 var uuid = "";
 var frame_no = -1;
-var metadata = ""
+var metadata = "";
+var cursorstyle = "default";
 
 // set load hooks
 window.onload = reload_canvas;
@@ -21,6 +22,30 @@ var canvas_down = false;
 var added_shape = null;
 var add_shape = false;
 var canExit = true;
+
+var map;
+var marker = null;
+
+function initMap() {
+	map = new google.maps.Map(document.getElementById('mapDock'), 
+	{
+		center: {lat: 47.619, lng: -122.3168},
+		zoom: 15,
+		disableDefaultUI: true,
+		mapTypeId: 'satellite'
+	});
+
+	marker = new google.maps.Marker({
+		position : new google.maps.LatLng(47.619, -122.3168),
+		map      : map
+	});
+}
+
+function load_map(latitude, longitude) {
+	loc = new google.maps.LatLng(latitude, longitude);
+	map.setCenter(loc);
+	marker.setPosition(loc);
+}
 
 // when the canvas image is updated, redraw the image
 base_img.onload = function() {
@@ -54,7 +79,7 @@ function update_selected_shape() {
 // redraw the canvas, background img, and polygons
 function reload_canvas() {
 	// draw bg img
-	ctx.drawImage(base_img, 0, 0, canvas.width - 200, canvas.height);
+	ctx.drawImage(base_img, 0, 0, canvas.width, canvas.height);
 
 	// draw polygons
 	mgr.draw_shapes(ctx);
@@ -66,6 +91,20 @@ function reload_canvas() {
 
 function addShape() {
 	if (!add_shape) {
+		$("#addPoly").css({
+			'background-color' : 'rgb(50, 100, 200)',
+			'color' : 'white',
+			'border' : '1px solid white',
+			'transform' : 'rotate(90deg)'
+		});
+
+		$("#plusSign").css({
+			'margin-top' : '0px'
+		});
+
+		cursorstyle = 'crosshair';
+		canvas.style.cursor = cursorstyle;
+
 		add_shape = true;
 		added_shape = new Shape();
 	}
@@ -97,7 +136,7 @@ function clearShapes() {
 
 function skipImage() {
 	var sequential = document.getElementById("sequentialFrames").checked;
-	var carryover = document.getElementById("loadAnnotations").checked;
+	var carryover = document.getElementById("previousAnnotations").checked;
 
 	if (!sequential || !carryover) {
 		clearShapes();
@@ -107,10 +146,8 @@ function skipImage() {
 	reload_canvas();
 }
 
-function submitLabels() {
+function submit_labels() {
 	labels = mgr.formatLabels();
-
-	console.log(labels);
 
 	$.ajax({
 		url: "/post_annotation",
@@ -124,11 +161,43 @@ function submitLabels() {
 
 	stats.complete_image(shapes = mgr.num_shapes());
 
-	document.getElementById('imgCounter').innerText = stats.get_num_images() + ' images';
-	document.getElementById('mAPCounter').innerText = '+ ' + stats.mAPIncrease() + '% mAP';
+	document.getElementById('localImages').innerText = stats.get_num_images();
+	document.getElementById('localLabels').innerText = stats.get_num_labels();
 
 	skipImage();
 }
+
+var settingsOpen = false;
+$("#settingsBtn").on('click', function() {
+	settingsOpen = !settingsOpen;
+	$("#settingsPanel").css({'left' : 'calc(100% - ' + (settingsOpen ? '250px' : '0px') +')'});
+	$("#settingsBtn").css({'transform' : 'rotate(' + (settingsOpen ? '-90' : '0') + 'deg)'});
+});
+
+var mapOpen = true;
+$("#mapBtn").on('click', function() {
+	mapOpen = !mapOpen;
+	show_map_panel(mapOpen);
+	if (mapOpen) {
+		$("#mapBtn").addClass("mapOpenCtr");
+		$("#mapBtn").removeClass("mapClosedCtr");
+	} else {
+		$("#mapBtn").removeClass("mapOpenCtr");
+		$("#mapBtn").addClass("mapClosedCtr");
+	}
+	$("#mapBtn").css({'transform' : 'scaleX(' + (mapOpen ? '1' : '-1') + ')'});
+});
+
+$("#shapeDock").draggable();
+$("#mapDock").draggable();
+function show_map_panel(map_open) {
+	if (!map_open) {
+		$("#mapDock").fadeOut("fast", function() {});
+	} else {
+		$("#mapDock").fadeIn("fast", function() {});
+	}
+}
+
 //
 // Canvas ('canvas') asynchronous hooks
 //
@@ -148,9 +217,18 @@ canvas.onmousedown = function(e) {
 			selected_shape = added_shape;
 			added_shape = null;
 			add_shape = false;
+
+			$("#addPoly").removeAttr('style');
+			$("#plusSign").css({'margin-top' : '1px'});
+
+			cursorstyle = 'default';
+			canvas.style.cursor = cursorstyle;
 		}
 
 		reload_canvas();
+		if (added_shape) {
+			mgr.draw_shape(added_shape, ctx, e.offsetX, e.offsetY);
+		}
 		return;
 	}
 
@@ -174,7 +252,7 @@ canvas.onmousemove = function(e) {
 		}
 	} else {
 		hovering = mgr.mouseHover(e.offsetX, e.offsetY, reload_canvas);
-		canvas.style.cursor = hovering ? 'pointer' : 'crosshair';
+		canvas.style.cursor = hovering ? 'pointer' : cursorstyle;
 	}
 }
 
@@ -235,10 +313,12 @@ function set_canvas_image_from_json(result) {
 	frame_no = parseInt(json_result.frame_no);
 	metadata = json_result.metadata;
 
-	base_img.src = "data:image/png;base64," + json_result.frame;
-	mgr.load_from_json(metadata);
-
-	reload_canvas();
+	try {
+		load_map(json_result.latitude, json_result.longitude);
+		base_img.src = "data:image/png;base64," + json_result.frame;
+		mgr.load_from_json(metadata);
+		reload_canvas();
+	} catch (err) { }
 }
 
 var hopped = null;
@@ -317,6 +397,8 @@ $(document).ready(function() {
 		url: "/request_image",
 		success: set_canvas_image_from_json
 	});
+
+	load_statistics();
 });
 
 var x = []
@@ -343,3 +425,38 @@ function shade_input_label(e) {
 $("#typeLabel").on('input', function() {
 	shade_input_label($(this));
 });
+
+$("#addPoly").on('click', addShape);
+$("#clearPoly").on('click', clearShapes);
+$("#skipFrame").on('click', skipImage);
+$("#submitLabels").on('click', submit_labels);
+
+setInterval(load_statistics, 5000);
+
+function load_statistics() {
+	$.get("/stats", function(data) {
+		d = JSON.parse(data);
+		$("#globalImages").text(d.total_images);
+		$("#globalLabels").text(d.total_labels);
+	});
+}
+
+$(document).keypress(function(e) {
+	for (i = 0; i < saveableIds.length; i++) {
+		if ($("#" + saveableIds[i]).is(":focus")) {
+			return;
+		}
+	}
+
+	var keycode = String.fromCharCode(e.which);
+
+	if (keycode == 'a') {
+		addShape();
+	} else if (keycode == 'x') {
+		clearShapes();
+	} else if (keycode == 'n') {
+		skipImage();
+	} else if (keycode == 's') {
+		submit_labels();
+	}
+ });

@@ -1,6 +1,20 @@
+:root {
+	--dockHeight : 65px;
+	--buttonRadius : 35px;
+}
+
+
+.gmnoprint a, .gmnoprint span, .gm-style-cc {
+    display:none;
+}
+.gmnoprint div {
+    background:none !important;
+}
+
 body {
 	margin: 0px;
 	padding: 0px;
+	overflow-x:hidden;
 }
 
 html {
@@ -10,25 +24,286 @@ html {
 
 .canvas {
 	width:100%;
-	height:100%;
+	height:calc(100% - var(--dockHeight));
 	padding:0;
 	margin:0;
 	position:fixed;
-	left:230px;
-	top:0px;
+	left:0;
+	top:0;
 	overflow:scroll;
 }
 
 .cpanel {
-	width:230px;
-	height:100%;
+	width:100%;
+	height:var(--dockHeight);
 	background-color:white;
 	z-index:1;
-	top:0;
-	left:0;
 	overflow-x:hidden;
 	position:fixed;
+	bottom:0;
+	left:0;
+	border-top:1px solid rgb(150, 150, 150);
+	box-shadow: 0px -2px 5px rgba(0, 0, 0, .2);
+	min-width:500px;
+}
+
+.cpanelContainer {
+	width:100%;
+	height:100%;
+	position:relative;
+	display: flex;
+	justify-content: center;
+}
+
+.settingsButton {
+	width:auto;
+	height:100%;
+	position:absolute;
+	right:0;
+	bottom:0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.settingsButtonCtr {
+	width:auto;
+	height:auto;
+    align-self: center;
+    transition: transform .4s, color .2s;
+}
+
+.settingsButtonCtr:hover {
+	color: rgb(85, 85, 85);
+	cursor: pointer;
+}
+
+.settingsButtonCtr:active {
+	color: rgb(70, 70, 70);
+}
+
+.mapButtonCtr {
+	width: auto;
+	height: auto;
+	align-self: center;
+	transition: transform .2s, color .2s;
+	color: rgb(242, 163, 44);
+	margin-right:5px;
+}
+
+.mapButtonCtr:hover {
+	cursor: pointer;
+}
+
+.mapOpenCtr {
+	color: rgb(50, 168, 82);
+}
+
+.mapClosedCtr {
+	color: rgb(219, 56, 31);
+}
+
+.mapDock {
+	width:330px;
+	height:220px;
+	background-color:white;
+	border-radius:5px;
+	position:absolute;
+	left:10;
+	top:10;
+	z-index:100;
+	box-shadow: 2px 2px 4px rgba(0, 0, 0, .3);
+	border: 5px solid rgb(220, 220, 220);
+}
+
+.settingsIcon {
+	width:auto;
+	height:auto;
+	color: rgb(100, 100, 100);
+	font-size:2em;
+}
+
+.settingsPanel {
+	width:250px;
+	height:calc(100% - var(--dockHeight));
+	position:absolute;
+	left:100%;
+	top:0;
+	background-color:white;
+	transition: left .4s;
+	box-shadow: -3px 0px 5px rgba(0, 0, 0, .1);
+	border-left: 1px solid rgb(130, 130, 130);
 	padding:10px;
+}
+
+.statsPanel {
+	position:absolute;
+	left:0;
+	bottom:0;
+	width:auto;
+	height: var(--dockHeight);
+}
+
+.localStatsPanel {
+	float:left;
+	height:100%;
+	width:100px;
+	border-right: 1px solid rgb(220, 220, 220);
+}
+
+.statsCol {
+	width:100%;
+	height:calc(100% - 20px);
+	display: flex;
+	flex-direction: column;
+}
+
+.statsRow {
+	flex: 1;
+	font-size: .8em;
+	padding-top:2.5px;
+	padding-left:5px;
+	color: rgb(0, 85, 138);
+}
+
+.labelText {
+	color:black;
+	font-weight:10000;
+	text-align:right;
+	width:100%;
+}
+
+.globalStatsPanel {
+	float:right;
+	height:100%;
+	width:100px;
+	border-right: 1px solid rgb(220, 220, 220);
+}
+
+.statsTitle {
+	height:20px;
+	width:100%;
+	text-align:center;
+	color:rgb(75, 75, 75);
+	font-size:.7em;
+	padding-top:2px;
+	font-weight: 900;
+	background-color:rgb(240, 240, 240);
+	border-bottom: 1px solid rgb(220, 220, 220);
+}
+
+.tightIcon {
+	height:15px;
+}
+
+.navButtons {
+	position:relative;
+	float:right;
+	height:100%;
+	width:auto;
+	display: flex;
+	justify-content: center;
+}
+
+.navButtonDock {
+    align-self: center;
+    margin-left:10px;
+    margin-right:10px;
+}
+
+.navButton {
+	width: var(--buttonRadius);
+	height: var(--buttonRadius);
+	border-radius: 50%;
+	border: 1px solid rgb(200, 200, 200);
+	background-color:white;
+    position:relative;
+	transition: background-color .2s;
+	font-size:1.1em;
+}
+
+.navButton .fa {
+	position:relative;
+	top:50%;
+	left:50%;
+	transform:translate(-50%,-50%);
+}
+
+.navButton:hover {
+	cursor: pointer;
+}
+
+.navButtonText {
+	font-size:.6em;
+	color:rgb(120, 120, 120);
+	text-align:center;
+	width: 100%;
+	height:auto;
+	margin:0;
+	padding:0;
+}
+.navButtonSubmit {
+	color: rgb(92, 214, 59);
+	background-color:rgba(140, 255, 110, .15);
+}
+
+.navButtonSubmit:hover {
+	background-color:rgba(140, 255, 110, .5);
+}
+
+.navButtonSubmit:active {
+	background-color:rgba(90, 235, 70, .5);
+}
+
+.navButtonClear {
+	color: rgb(245, 75, 66);
+	background-color: rgba(240, 155, 151, .15);
+}
+
+.navButtonClear:hover {
+	background-color: rgba(240, 155, 151, .5);
+}
+
+.navButtonClear:active {
+	background-color: rgba(230, 130, 130, .5);
+}
+
+.navButtonSkip {
+	color: rgb(77, 132, 235);
+	background-color: rgba(129, 168, 240, .15);
+}
+
+.navButtonSkip:hover {
+	background-color: rgba(129, 168, 240, .5);
+}
+
+.navButtonSkip:active {
+	background-color: rgba(100, 140, 230, .5);
+}
+
+.navButtonAdd {
+	color: rgb(77, 132, 235);
+	background-color: rgba(129, 168, 240, .15);
+	border: 1px solid rgb(150, 150, 150);
+	transition: transform .25s, background-color .25s, color .25s;
+}
+
+.navButtonAdd:hover {
+	background-color: rgba(129, 168, 240, .5);
+}
+
+.navButtonAdd:active {
+	background-color: rgba(100, 140, 230, .5);
+}
+
+.vertical-hr {
+	height:calc(100% - 20px);
+	width:2px;
+	border-right: 1px solid rgb(230, 230, 230);
+	margin-top:10px;
+	margin-bottom:10px;
+	margin-left:5px;
+	margin-right:5px;
 }
 
 .canvasDiv {

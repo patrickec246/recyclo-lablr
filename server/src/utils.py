@@ -7,6 +7,7 @@ import pyexifinfo
 import datetime
 import base64
 import random
+import re
 
 from settings import *
 
@@ -147,7 +148,7 @@ def read_video_metadata(uuid):
     with open(metadata_file) as f:
         return json.loads(f.read())
 
-def convert_img_to_base64(img_path, quality=70):
+def convert_img_to_base64(img_path, quality=80):
     if img_path is None or not os.path.exists(img_path):
         return None
 
@@ -181,6 +182,24 @@ def add_annotation(uuid, frame_no, js):
         log('Wrote annotation for uuid: {}, frame: {}'.format(uuid, frame_no))
 
     return str(True)
+
+def load_img_gps(uuid):
+    def dms_to_decimal(dms_str):
+        if not dms_str:
+            return 0
+
+        dms = re.split('[°\'"]+', dms_str.replace('deg', '°').replace(' ', ''))
+        return (float(dms[0]) + (float(dms[1]) / 60) + (float(dms[2]) / 3600)) * (-1 if dms[3] in ['S', 'W'] else 1)
+
+    meta_path = os.path.join(unlabeled_root, uuid, 'metadata.json')
+
+    if not os.path.exists(meta_path):
+        return (0, 0)
+
+    with open(meta_path, 'r') as f:
+        meta = json.loads(f.read())
+        return dms_to_decimal(meta['latitude']), dms_to_decimal(meta['longitude'])
+
 
 def generate_image_labeling_json(last_img_uuid=None, last_frame=-1, sequential_img=False, load_server_polygons=False):
     def pick_next_image(last_img_uuid, last_frame, sequential_img, pseudo_sequential=False):
@@ -220,6 +239,7 @@ def generate_image_labeling_json(last_img_uuid=None, last_frame=-1, sequential_i
     uuid = os.path.basename(uuid_dir)
 
     json_out = {'uuid' : uuid, 'frame_no' : frame_no}
+    json_out['latitude'], json_out['longitude'] = load_img_gps(uuid)
     json_out['frame'] = str(frame_text)
 
     if load_server_polygons:

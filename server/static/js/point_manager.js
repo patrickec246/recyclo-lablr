@@ -36,7 +36,7 @@ class Shape {
 
 		this.points.push({x:x, y:y, angle: 0});
 
-        if (this.points.length == 4) this.sort_points();
+        //if (this.points.length == 4) this.sort_points();
 
 		return true;
 	}
@@ -383,6 +383,10 @@ class StatsManager {
 		this.num_images += images;
 		this.num_shapes += shapes;
 	}
+
+    get_num_labels() {
+        return this.num_shapes;
+    }
 
 	get_num_images() {
 		return this.num_images;
