@@ -2,7 +2,9 @@
 
 live demo: http://3.136.154.137/  
 
-![demo](static/demo.png)
+> [![screenshot][1]][1]
+
+  [1]: static/demo.png
 
 ## Instructions
 **Setup configuration** - configs are found in sentinel.py (let's move this to config.json yo)
@@ -24,6 +26,8 @@ live demo: http://3.136.154.137/
 
 	# rate (in sec.) to recalculate statistics
     self.update_stats_rate = 5
+
+
 
 **Standing up the server:**
 
