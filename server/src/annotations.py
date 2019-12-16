@@ -13,34 +13,25 @@ def calc_iou(poly1, poly2):
 
 class Annotation(object):
 	def __init__(self, json_str=None):
-		self.label = ""
-		self.producer = ""
-		self.qualifiers = []
-		self.points = []
-		self.raw_points = []
+		self.annotation = {}
 
 		if json_str is not None:
 			self.initialize_from_json(json_str)
-
-	def __repr__(self):
-		self_str = self.label
-		if self.producer:
-			self_str += ' [{}]'.format(self.producer)
-		if self.qualifiers:
-			self_str += ' ({})'.format(self.qualifiers)
-		self_str += ' ' + str(self.points)
-		return self_str
+	
+	def json_str(self):
+		return json.dumps(self.annotation)
 
 	def initialize_from_json(self, json_str):
 		json_obj = json_str
 		if type(json_str) == str:
 			json_obj = json.loads(json_str)
 
-		self.label = json_obj['label'].replace('.', '').lower().strip()
-		self.producer = json_obj['producer'].lower().strip()
-		self.qualifiers = json_obj['qualifiers'].lower().strip()
-		self.points = [(p['x'], p['y']) for p in json_obj['points']]
-		self.raw_points = json_obj['points']
+		self.annotation.clear()
+		self.annotation['label'] = json_obj['label'].replace('.', '').lower().strip()
+		self.annotation['producer'] = json_obj['producer'].lower().strip()
+		self.annotation['qualifiers'] = json_obj['qualifiers'].lower().strip()
+		self.annotation['points'] = [(p['x'], p['y']) for p in json_obj['points']]
+		self.annotation['raw_points'] = json_obj['points']
 
 	def iou(self, other=None):
 		if other is None or type(other) is not Annotation:
@@ -65,20 +56,26 @@ class AnnotationAggregator(object):
 		self.annotations = {}
 
 	def load_annotations(self, json_paths):
-		annotations = {}
+		ann = {}
 		for i, json_path in enumerate(json_paths):
 			with open(json_path, 'r') as f:
 				json_obj = json.loads(f.read())
 				for label in json_obj:
-					if i not in annotations:
-						annotations[i] = []
-					annotations[i].append(Annotation(label))
+					if i not in ann:
+						ann[i] = []
+					annotation = Annotation(label)
+					ann[i].append(annotation.json_str())
 
-		self.annotations = annotations
-		return annotations
+		self.annotations = ann
+		return ann
 
 	def aggregate(self):
+		min_iou = .2
 		if self.annotations is None:
 			return None
+		
+		for i, idx in enumerate(self.annotations):
+			for j, annotation in enumerate(self.annotations[idx]):
+				print(i, j, annotation)
 
-		return json.dumps(self.annotations[0])
+		return json.dumps(self.annotations, indent=4, sort_keys=True)

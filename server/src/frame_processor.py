@@ -68,3 +68,5 @@ def cleanup_completed_videos():
 		videos.append(file)
 
 	return videos
+
+complete_saturated_frames()

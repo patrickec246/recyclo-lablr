@@ -36,11 +36,11 @@ def request_image():
     sequential = request.args.get('sequential')
     annotations = request.args.get('annotations')
 
-    log('Received image request {}, {}, {}'.format(last_uuid, frame, annotations))
-
+    # If the user did not provide enough data, make a blank query for the next image
     if any(element is None for element in [last_uuid, frame, sequential, annotations]):
         return generate_image_labeling_json()
 
+    # Use user data to guide next image query
     last_uuid = str(last_uuid)
     frame = int(frame)
     sequential = True if sequential.lower() == 'true' else False
@@ -51,6 +51,7 @@ def request_image():
 @app.route('/post_annotation', methods=['GET', 'POST'])
 def post_annotation():
     annotation_json = request.form.get('annotation_data')
+
     uuid = request.form.get('uuid')
     frame_no = request.form.get('frame_no')
 
@@ -67,7 +68,9 @@ def get_labels():
     return ''
 
 if __name__ == "__main__":
+    # Start server backend process
     sentinel = ServerSentinel()
     sentinel.run()
 
+    # Stand up web server for front end
     app.run(debug=True)

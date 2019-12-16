@@ -1,31 +1,30 @@
-// globals
+/* Canvas Variables */
 var canvas = document.getElementById('polyCanvas');
 var ctx = canvas.getContext("2d");
-var img_number = 1;
+
+/* Managers */
 var mgr = new ShapeManager();
 var stats = new StatsManager();
 
+/* Frame Sequence Data */
 var uuid = "";
 var frame_no = -1;
 var metadata = "";
 var cursorstyle = "default";
 
-// set load hooks
-window.onload = reload_canvas;
-window.onresize = reload_canvas;
+/* Map Objects  */
+var map;
+var marker = null;
 
-// working vars
+/* Working State Variables */
 var selected_shape = null;
 var base_img = new Image();
-var last_img = "";
 var canvas_down = false;
 var added_shape = null;
 var add_shape = false;
 var canExit = true;
 
-var map;
-var marker = null;
-
+/* Map Functions */
 function initMap() {
 	map = new google.maps.Map(document.getElementById('mapDock'), 
 	{
@@ -47,15 +46,13 @@ function load_map(latitude, longitude) {
 	marker.setPosition(loc);
 }
 
-// when the canvas image is updated, redraw the image
+/* Special hook to clear the canvas when the background changes */
 base_img.onload = function() {
 	ctx.drawImage(base_img, 0, 0, canvas.width, canvas.height);
 	reload_canvas();
 }
 
-/*
- * Drawing utilities
- */
+/* Canvas polygon drawing utilities */
 
 function delete_selected_shape() {
 	if (selected_shape) {
@@ -76,19 +73,23 @@ function update_selected_shape() {
 	}
 }
 
-// redraw the canvas, background img, and polygons
-function reload_canvas() {
-	// draw bg img
-	ctx.drawImage(base_img, 0, 0, canvas.width, canvas.height);
+/* Set Resize Hooks */
+window.onload = reload_canvas;
+window.onresize = reload_canvas;
 
-	// draw polygons
+/* Redraw the canvas (image then polygons) */
+function reload_canvas() {
+	ctx.drawImage(base_img, 0, 0, canvas.width, canvas.height);
 	mgr.draw_shapes(ctx);
 }
 
 /*
- * Button functions (add, clear, skip, submit)
+ * Button functions:
+ *    - add
+ *    - clear
+ *    - skip
+ *    - submit
  */
-
 function addShape() {
 	if (!add_shape) {
 		$("#addPoly").css({
@@ -129,23 +130,6 @@ function retrieve_next_image(sequential=false, carryover=false) {
 	reload_canvas();
 }
 
-function clearShapes() {
-	mgr.clear_shapes();
-	reload_canvas();
-}
-
-function skipImage() {
-	var sequential = document.getElementById("sequentialFrames").checked;
-	var carryover = document.getElementById("previousAnnotations").checked;
-
-	if (!sequential || !carryover) {
-		clearShapes();
-	}
-
-	retrieve_next_image(sequential, carryover);
-	reload_canvas();
-}
-
 function submit_labels() {
 	labels = mgr.formatLabels();
 
@@ -167,6 +151,24 @@ function submit_labels() {
 	skipImage();
 }
 
+function clearShapes() {
+	mgr.clear_shapes();
+	reload_canvas();
+}
+
+function skipImage() {
+	var sequential = document.getElementById("sequentialFrames").checked;
+	var carryover = document.getElementById("previousAnnotations").checked;
+
+	if (!sequential || !carryover) {
+		clearShapes();
+	}
+
+	retrieve_next_image(sequential, carryover);
+	reload_canvas();
+}
+
+/* Settings Pane & Button Logic */
 var settings_open = false;
 $("#settingsBtn").on('click', function() {
 	settings_open = !settings_open;
@@ -176,6 +178,11 @@ $("#settingsBtn").on('click', function() {
 	$("#settingsBtn").css({'transform' : 'rotate(' + (settings_open ? '-90' : '0') + 'deg)'});
 });
 
+$("#sequentialFrames").change(function() {
+	$("#previousAnnotations").prop("disabled", !this.checked);
+});
+
+/* Map Pane & Button Logic*/
 var mapOpen = true;
 $("#mapBtn").on('click', function() {
 	mapOpen = !mapOpen;
@@ -192,6 +199,7 @@ $("#mapBtn").on('click', function() {
 
 $("#shapeDock").draggable();
 $("#mapDock").draggable();
+
 function show_map_panel(map_open) {
 	if (!map_open) {
 		$("#mapDock").fadeOut("fast", function() {});
@@ -200,12 +208,10 @@ function show_map_panel(map_open) {
 	}
 }
 
-//
-// Canvas ('canvas') asynchronous hooks
-//
-
+/*
+ * Canvas mouse Hooks
+ */
 let drag = false;
-
 canvas.onmousedown = function(e) {
 	drag = false;
 	if (add_shape) {
@@ -270,23 +276,10 @@ canvas.onmouseup = function(e) {
 	}
 }
 
-//
-// Dock operations
-//
+/* Labeling Dock Operations */
 
 var closeBtn = document.getElementById("closeBtn");
 var shapeDock = document.getElementById("shapeDock");
-
-closeBtn.onclick = function(e) {
-	if (shapeDock.style.display == 'none') {
-		shapeDock.style.display = 'block';
-	} else {
-		shapeDock.style.display = 'none';
-	}
-	mgr.deselect_shapes();
-	reload_canvas();
-}
-
 var savePoint = document.getElementById('savePoint');
 var saveableIds = ['typeLabel', 'featuresLabel', 'producerLabel']
 
@@ -304,12 +297,24 @@ saveableIds.forEach(id => {
 	});
 });
 
+closeBtn.onclick = function(e) {
+	if (shapeDock.style.display == 'none') {
+		shapeDock.style.display = 'block';
+	} else {
+		shapeDock.style.display = 'none';
+	}
+	mgr.deselect_shapes();
+	reload_canvas();
+}
+
+/* Load Canvas State from JSON response */
 function set_canvas_image_from_json(result) {
 	json_result = JSON.parse(result);
 
 	if (!json_result.frame || !json_result.frame_no) {
 	    return;
 	}
+
 	uuid = json_result.uuid;
 	frame_no = parseInt(json_result.frame_no);
 	metadata = json_result.metadata;
@@ -317,12 +322,11 @@ function set_canvas_image_from_json(result) {
 	try {
 		load_map(json_result.latitude, json_result.longitude);
 		base_img.src = "data:image/png;base64," + json_result.frame;
-		//mgr.load_from_json(metadata);
 		reload_canvas();
 	} catch (err) { }
 }
 
-var hopped = null;
+/* Tutorial Modal Operations */
 var modal_step = -1;
 var modal_objs = ["#polyCanvas", '#addPoly', '#clearPoly',
 				  '#skipFrame', '#submitLabels', '#settingsBtn',
@@ -337,7 +341,7 @@ function advance_modal() {
 
 	if (modal_step < modal_objs.length) {
 		update_modal(modal_step);
-		hopped = $(modal_objs[modal_step]).hop();
+		$(modal_objs[modal_step]).hop();
 	} else {
 		clear_hop();
 	}
@@ -350,7 +354,7 @@ function reverse_modal() {
 
 	if (modal_step < modal_objs.length) {
 		update_modal(modal_step);
-		hopped = $(modal_objs[modal_step]).hop();
+		$(modal_objs[modal_step]).hop();
 	} else {
 		clear_hop();
 	}
@@ -377,38 +381,8 @@ function close_tutorial_modal() {
 	$("#tutorialModal").remove();
 }
 
-$("#sequentialFrames").change(function() {
-	$("#previousAnnotations").prop("disabled", !this.checked);
-});
-
-$(window).on('load', function() {
-	var visited_before = sessionStorage.getItem("hasVisited");
-
-	if (visited_before == 'false' || visited_before == false || visited_before == null) {
-		sessionStorage.setItem("hasVisited", true);
-		show_tutorial_modal();
-	}
-
-	//sessionStorage.removeItem("hasVisited");
-});
-
-$(document).ready(function() {
-	$.ajax({
-		url: "/request_image",
-		success: set_canvas_image_from_json
-	});
-
-	load_statistics();
-});
-
-function label_input_valid() {
-	input_val = $("#typeLabel").val();
-	console.log(input_val);
-	return input_val && x.includes(input_val);
-}
-
+/* Managing available labels & user input validity */
 var x = []
-
 $.get("labels.txt", function(data) {
 	x = data.split('\n')
 	$("#typeLabel").autocomplete({
@@ -424,22 +398,27 @@ $.get("labels.txt", function(data) {
 function shade_input() {
 	shade_input_label($("#typeLabel"));
 }
+
 function shade_input_label(e) {
 	e.css('background-color', (label_input_valid() ? 'rgba(10, 224, 69, .1)' : 'rgba(250, 67, 46, .1)'));
+}
+
+function label_input_valid() {
+	input_val = $("#typeLabel").val();
+	return input_val && x.includes(input_val);
 }
 
 $("#typeLabel").on('input', function() {
 	shade_input_label($(this));
 });
 
-
+/* Canvas Operation Button Hooks */
 $("#addPoly").on('click', addShape);
 $("#clearPoly").on('click', clearShapes);
 $("#skipFrame").on('click', skipImage);
 $("#submitLabels").on('click', submit_labels);
 
-setInterval(load_statistics, 5000);
-
+/* Loading labeling statistics */
 function load_statistics() {
 	$.get("/stats", function(data) {
 		d = JSON.parse(data);
@@ -448,6 +427,9 @@ function load_statistics() {
 	});
 }
 
+setInterval(load_statistics, 5000);
+
+/* Catch special keys */
 $(document).keypress(function(e) {
 	for (i = 0; i < saveableIds.length; i++) {
 		if ($("#" + saveableIds[i]).is(":focus")) {
@@ -456,7 +438,6 @@ $(document).keypress(function(e) {
 	}
 
 	var keycode = String.fromCharCode(e.which);
-
 	if (keycode == 'a') {
 		addShape();
 	} else if (keycode == 'x') {
@@ -467,3 +448,22 @@ $(document).keypress(function(e) {
 		submit_labels();
 	}
  });
+
+/* Window Load Functions */
+$(window).on('load', function() {
+	var visited_before = sessionStorage.getItem("hasVisited");
+
+	if (visited_before == 'false' || visited_before == false || visited_before == null) {
+		sessionStorage.setItem("hasVisited", true);
+		show_tutorial_modal();
+	}
+});
+
+$(document).ready(function() {
+	$.ajax({
+		url: "/request_image",
+		success: set_canvas_image_from_json
+	});
+
+	load_statistics();
+});

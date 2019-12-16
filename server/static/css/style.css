@@ -107,8 +107,8 @@ html {
 }
 
 .mapDock {
-	width:30em;
-	height:20em;
+	width:25em;
+	height:17em;
 	background-color:white;
 	border-radius:5px;
 	position:absolute;
@@ -484,7 +484,7 @@ input::placeholder {
 	margin-bottom:10px;
 }
 
-.btn : hover {
+.btn:hover {
 	cursor:crosshair;
 }
 

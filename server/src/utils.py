@@ -14,50 +14,21 @@ from settings import *
 from io import StringIO, BytesIO
 from PIL import Image
 
+# Directories
 logs_root = 'logs'
 data_root = 'data'
 raw_root = 'data/raw'
 labeled_root = 'data/labeled'
 unlabeled_root = 'data/unlabeled'
 
-'''
- This is going to take some massaging to fine tune but this works... ok...
-'''
 def calculate_average_annotations(annotations, iou_thresh=.75):
     if len(annotations) > 0:
         return annotations[0]
 
-    shapes = {}
-    for annotation in annotations:
-        shape_map = {}
+    # TODO implement correctly
+    return {}
 
-        for shape in annotation['shapes']:
-            label = shape['label']
-            producer = shape['producer']
-            qualities = shape['qualifiers']
-            points = shape['points']
-
-            if label not in shape_map:
-                shape_map[label] = [points]
-            else:
-                shape_map[label].append(points)
-
-        annotation_list = {}
-        for label, proposed_points in shape_map.items():
-            sorted_points = [sort_points_cw(point_list) for point_list in proposed_points]
-
-            avg_points = []
-            n = 0
-            points_per_poly = 4
-
-            for shape_points in sorted_points:
-                for i in range(points_per_poly):
-                    avg_points[i] += shape_points[i]
-
-            if calc_iou(shape_map[label]['points'], sorted_points) >= iou_thresh:
-                shapes[label].merge(sorted_points)
-    return shapes
-
+# Loads the annotation 
 def load_frame_annotations(uuid, frame, frame_dir=unlabeled_root):
     js = []
 
@@ -69,10 +40,12 @@ def load_frame_annotations(uuid, frame, frame_dir=unlabeled_root):
 
     return js
 
+# Selects a random video path from all raw videos
 def pick_random_video():
-    valid_videos = [x for x in glob.glob(os.path.join(raw_root, '*')) if 'MOV' in x]
+    valiad_videos = [x for x in glob.glob(os.path.join(raw_root, '*')) if 'MOV' in x]
     return random.choice(valid_videos) if len(valid_videos) > 0 else None
 
+# Splits up a single video into frames & metadata
 def process_video(video_path, frame_output_dir=unlabeled_root, delete_after_processing=False):
     log('Attempting to process video {}'.format(video_path))
     frames = convert_video_to_frames(video_path)
@@ -87,7 +60,7 @@ def process_video(video_path, frame_output_dir=unlabeled_root, delete_after_proc
     path_name = os.path.join(frame_output_dir, dir_name)
     os.mkdir(path_name)
 
-    for i, frame in frames:
+    for i, frame in enumerate(frames):
         annotation_path = os.path.join(path_name, str(i))
         os.mkdir(annotation_path)
         frame_path = os.path.join(annotation_path, 'frame.jpg')
@@ -105,6 +78,7 @@ def process_video(video_path, frame_output_dir=unlabeled_root, delete_after_proc
 
     return path_name
 
+# Converts a video into an image for each frame
 def convert_video_to_frames(video_path):
     if not os.path.exists(video_path):
         return None
@@ -115,15 +89,14 @@ def convert_video_to_frames(video_path):
 
     video = cv2.VideoCapture(video_path)
     r, frame = video.read()
-    i = 0
 
     while r:
-        output.append((i, frame))
+        output.append(frame)
         r, frame = video.read()
-        i += 1
 
     return output
 
+# Extracts metadata from the raw video
 def get_video_metadata(file_path):
     exifinfo = pyexifinfo.get_json(file_path)[0]
 
@@ -139,6 +112,7 @@ def get_video_metadata(file_path):
 
     return {'latitude':latitude, 'longitude':longitude, 'elevation':elevation, 'creationtime':utcmktime}
 
+# Loads the general metadata for a processed video
 def read_video_metadata(uuid):
     metadata_file = os.path.join(unlabeled_root, uuid, 'metadata.json')
 
@@ -148,6 +122,7 @@ def read_video_metadata(uuid):
     with open(metadata_file) as f:
         return json.loads(f.read())
 
+# Converts an image array object into a base64 character array
 def convert_img_to_base64(img_path, quality=80):
     if img_path is None or not os.path.exists(img_path):
         return None
@@ -159,6 +134,7 @@ def convert_img_to_base64(img_path, quality=80):
 
     return base64.b64encode(buf.read()).decode()
 
+# Adds a json annotation from the user to annotations uuid/frame_no
 def add_annotation(uuid, frame_no, js):
     frame_dir = os.path.join(unlabeled_root, uuid, frame_no)
 
@@ -183,6 +159,7 @@ def add_annotation(uuid, frame_no, js):
 
     return str(True)
 
+# Load the GPS (latitude, longitude) from a processed video uuid
 def load_img_gps(uuid):
     def dms_to_decimal(dms_str):
         if not dms_str:
@@ -200,7 +177,7 @@ def load_img_gps(uuid):
         meta = json.loads(f.read())
         return dms_to_decimal(meta['latitude']), dms_to_decimal(meta['longitude'])
 
-
+# Query the next image as a json metadata object with img data represented as base64 string in result['frame']
 def generate_image_labeling_json(last_img_uuid=None, last_frame=-1, sequential_img=False, load_server_polygons=False):
     def pick_next_image(last_img_uuid, last_frame, sequential_img, pseudo_sequential=False):
         if sequential_img:
@@ -231,8 +208,6 @@ def generate_image_labeling_json(last_img_uuid=None, last_frame=-1, sequential_i
     if get_frame is None:
         return json.dumps({'uuid' : '', 'frame_no' : '', 'frame' : '', 'metadata' : ''}, indent=4, sort_keys=True)
 
-    frame_text = convert_img_to_base64(get_frame)
-
     frame_no_dir = os.path.dirname(get_frame)
     uuid_dir = os.path.dirname(frame_no_dir)
     frame_no = os.path.basename(frame_no_dir)
@@ -240,7 +215,7 @@ def generate_image_labeling_json(last_img_uuid=None, last_frame=-1, sequential_i
 
     json_out = {'uuid' : uuid, 'frame_no' : frame_no}
     json_out['latitude'], json_out['longitude'] = load_img_gps(uuid)
-    json_out['frame'] = str(frame_text)
+    json_out['frame'] = str(convert_img_to_base64(get_frame))
 
     if load_server_polygons:
         json_out['metadata'] = calculate_average_annotations(load_frame_annotations(uuid, frame_no))
@@ -269,10 +244,7 @@ def save_labeled_stats(total_images, total_labels):
     with open(labeled_stats_file, 'w+') as f:
         f.write(json.dumps({'total_images' : total_images, 'total_labels' : total_labels}, indent=4, sort_keys=True))
 
+# This should be a database, yikes!
 start_stats = load_labeled_stats(in_memory=False)
 stats.set_total_labels(start_stats['total_labels'])
 stats.set_frames_labeled(start_stats['total_images'])
-
-'''
- Utils for server functionality
-'''

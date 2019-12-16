@@ -29,6 +29,6 @@ function update_trash_statistics() {
 	});
 }
 
-setInterval(update_trash_statistics, 2000);
+setInterval(update_trash_statistics, 5000);
 
 $(document).ready(update_trash_statistics);
