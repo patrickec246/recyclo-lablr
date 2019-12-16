@@ -39,8 +39,10 @@
 			</div>
 
 			<div class="shapeButtons pointerHover">
-				<i class="fa fa-trash-o pointerHover" style="font-size:1.5em;color:rgba(200, 0, 0, .6);float:left" onclick="delete_selected_shape()" id="deletePoint"></i>
-				<i class="fa fa-check pointerHover" style="font-size:1.5em;color:rgba(0, 150, 0, .6);float:right" onclick="update_selected_shape()" id="savePoint"></i>
+				<div class="layerContainer">
+					<i class="fa fa-trash-o pointerHover" style="font-size:1.5em;color:rgba(200, 0, 0, .6);" onclick="delete_selected_shape()" id="deletePoint"></i>
+					<i class="fa fa-check pointerHover right-docked" style="font-size:1.5em;color:rgba(0, 150, 0, .6);" onclick="update_selected_shape()" id="savePoint"></i>
+				</div>
 			</div>
 		</div>
 
@@ -80,7 +82,7 @@
 						<div class="navButton navButtonAdd" id="addPoly">
 							<i class="fa fa-plus tightIcon" aria-hidden="true" style="margin-top:1px" id="plusSign"></i>
 						</div>
-						<div class="navButtonText">add - <b>a</b></div>
+						<div class="navButtonText">add [a]</div>
 					</div>
 
 					<div class="vertical-hr"></div>
@@ -89,33 +91,33 @@
 						<div class="navButton navButtonClear" id="clearPoly">
 							<i class="fa fa-times tightIcon" aria-hidden="true"></i>
 						</div>
-						<div class="navButtonText">clear - <b>x</b></div>
+						<div class="navButtonText">clear [x]</div>
 					</div>
 
 					<div class="navButtonDock">
 						<div class="navButton navButtonSkip" id="skipFrame">
 							<i class="fa fa-arrow-right tightIcon" aria-hidden="true"></i>
 						</div>
-						<div class="navButtonText">skip - <b>n</b></div>
+						<div class="navButtonText">skip [n]</div>
 					</div>
 
 					<div class="navButtonDock">
 						<div class="navButton navButtonSubmit" id="submitLabels">
 							<i class="fa fa-check tightIcon" aria-hidden="true"></i>
 						</div>
-						<div class="navButtonText">submit - <b>s</b></div>
+						<div class="navButtonText">submit [s]</div>
 					</div>
 				</div>
 
 				<div class="settingsButton">
 					<div class="settingsIcon">
 						<div class="mapButtonCtr mapOpenCtr" id="mapBtn">
-							<i class="fa fa-map-marker" aria-hidden="true" style="margin:10px"></i>
+							<i class="fa fa-map-marker" aria-hidden="true"></i>
 						</div>
 					</div>
 					<div class="settingsIcon">
 						<div class="settingsButtonCtr" id="settingsBtn">
-							<i class="fa fa-cog" aria-hidden="true" style="margin:10px"></i>
+							<i class="fa fa-cog" aria-hidden="true"></i>
 						</div>
 					</div>
 				</div>

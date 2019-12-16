@@ -53,9 +53,9 @@ base_img.onload = function() {
 	reload_canvas();
 }
 
-//
-// Drawing utilities
-//
+/*
+ * Drawing utilities
+ */
 
 function delete_selected_shape() {
 	if (selected_shape) {
@@ -85,9 +85,9 @@ function reload_canvas() {
 	mgr.draw_shapes(ctx);
 }
 
-//
-// Button functions (add, clear, skip, submit)
-//
+/*
+ * Button functions (add, clear, skip, submit)
+ */
 
 function addShape() {
 	if (!add_shape) {
@@ -167,11 +167,13 @@ function submit_labels() {
 	skipImage();
 }
 
-var settingsOpen = false;
+var settings_open = false;
 $("#settingsBtn").on('click', function() {
-	settingsOpen = !settingsOpen;
-	$("#settingsPanel").css({'left' : 'calc(100% - ' + (settingsOpen ? '250px' : '0px') +')'});
-	$("#settingsBtn").css({'transform' : 'rotate(' + (settingsOpen ? '-90' : '0') + 'deg)'});
+	settings_open = !settings_open;
+
+	var settings_panel = $("#settingsPanel");
+	settings_panel.css({'left' : 'calc(100% - ' + (settings_open ? settings_panel.outerWidth() : '0') +'px)'});
+	$("#settingsBtn").css({'transform' : 'rotate(' + (settings_open ? '-90' : '0') + 'deg)'});
 });
 
 var mapOpen = true;
@@ -399,6 +401,12 @@ $(document).ready(function() {
 	load_statistics();
 });
 
+function label_input_valid() {
+	input_val = $("#typeLabel").val();
+	console.log(input_val);
+	return input_val && x.includes(input_val);
+}
+
 var x = []
 
 $.get("labels.txt", function(data) {
@@ -407,15 +415,15 @@ $.get("labels.txt", function(data) {
 		source: x,
 		autoFocus: true,
 		open: function() { canExit = false; },
-		close: function() { canExit = false; }
+		close: function() { canExit = false; },
+		close: shade_input,
+		change: shade_input
 	});
 });
 
-function label_input_valid() {
-	input_val = $("#typeLabel").val();
-	return input_val && x.includes(input_val);
+function shade_input() {
+	shade_input_label($("#typeLabel"));
 }
-
 function shade_input_label(e) {
 	e.css('background-color', (label_input_valid() ? 'rgba(10, 224, 69, .1)' : 'rgba(250, 67, 46, .1)'));
 }
@@ -423,6 +431,7 @@ function shade_input_label(e) {
 $("#typeLabel").on('input', function() {
 	shade_input_label($(this));
 });
+
 
 $("#addPoly").on('click', addShape);
 $("#clearPoly").on('click', clearShapes);
