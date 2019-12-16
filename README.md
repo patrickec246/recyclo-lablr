@@ -1,10 +1,10 @@
 **recyclr** serves images from a server and provides a labeling interface for crowdsourcing detection.
 
-live demo: http://3.136.154.137/  
+live demo: http://recyclr.net
 
 > [![screenshot][1]][1]
 
-  [1]: static/demo.png
+  [1]: inc/demo.png
 
 ## Instructions
 **Setup configuration** - configs are found in sentinel.py (let's move this to config.json yo)
