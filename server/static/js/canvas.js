@@ -317,7 +317,7 @@ function set_canvas_image_from_json(result) {
 	try {
 		load_map(json_result.latitude, json_result.longitude);
 		base_img.src = "data:image/png;base64," + json_result.frame;
-		mgr.load_from_json(metadata);
+		//mgr.load_from_json(metadata);
 		reload_canvas();
 	} catch (err) { }
 }
