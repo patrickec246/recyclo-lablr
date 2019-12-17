@@ -31,6 +31,14 @@ html {
 	left:0;
 	top:0;
 	overflow:scroll;
+	background: rgb(240, 240, 240);
+}
+
+.canvas canvas {
+	background-color: white;
+	border-bottom: .5px solid black;
+	box-shadow: 2px 2px 5px rgba(0, 0, 0, .8);
+	z-index:10;
 }
 
 .cpanel {
@@ -113,7 +121,7 @@ html {
 	border-radius:5px;
 	position:absolute;
 	left:10;
-	top:10;
+	bottom:calc(10px + var(--dockHeight));
 	z-index:2;
 	box-shadow: 1px 1px 4px rgba(0, 0, 0, .6);
 	border: 2px solid rgba(20, 20, 20, .8);
@@ -322,6 +330,10 @@ html {
 	overflow:scroll;
 }
 
+.canvasDiv canvas {
+	position:relative;
+}
+
 .longButton {
 	width:100%;
 	margin-top:5px;
@@ -371,6 +383,11 @@ html {
     align-items: center;
 	justify-content: center;
 	padding: 10px;
+	padding-top: 0;
+}
+
+.input-group-text-mini {
+	font-size:1pt;
 }
 
 .shapeForm {
@@ -393,6 +410,10 @@ html {
 	padding-top:.3em;
 	padding-right:.5em;
 	padding-bottom: .3em;
+}
+
+#closeBtn {
+	font-family: 'Titillium Web', sans-serif;
 }
 
 .pointerHover {

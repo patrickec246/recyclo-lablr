@@ -28,7 +28,7 @@ var canExit = true;
 function initMap() {
 	map = new google.maps.Map(document.getElementById('mapDock'), 
 	{
-		center: {lat: 47.619, lng: -122.3168},
+		center: {lat: 0, lng: 0},
 		zoom: 15,
 		disableDefaultUI: true,
 		mapTypeId: 'satellite'
@@ -67,6 +67,8 @@ function delete_selected_shape() {
 function update_selected_shape() {
 	if (label_input_valid() && selected_shape) {
 		selected_shape.label = document.getElementById('typeLabel').value;
+		selected_shape.qualifiers = document.getElementById('featuresLabel').value;
+		selected_shape.producer = document.getElementById('producerLabel').value;
 		shapeDock.style.display = 'none';
 		mgr.deselect_shapes();
 		reload_canvas();
@@ -98,16 +100,22 @@ function addShape() {
 			'border' : '1px solid white',
 			'transform' : 'rotate(90deg)'
 		});
+	} else {
+		$("#addPoly").removeAttr('style');
+	}
 
-		$("#plusSign").css({
-			'margin-top' : '0px'
-		});
-
+	if (!add_shape) {
 		cursorstyle = 'crosshair';
 		canvas.style.cursor = cursorstyle;
 
 		add_shape = true;
 		added_shape = new Shape();
+	} else {
+		cursorstyle = 'pointer';
+		canvas.style.cursorstyle = cursorstyle;
+
+		add_shape = false;
+		added_shape = null;
 	}
 }
 
@@ -298,6 +306,8 @@ saveableIds.forEach(id => {
 });
 
 closeBtn.onclick = function(e) {
+	mgr.check_input();
+
 	if (shapeDock.style.display == 'none') {
 		shapeDock.style.display = 'block';
 	} else {

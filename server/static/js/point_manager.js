@@ -266,6 +266,16 @@ class ShapeManager {
 		this.shapes.push(shape);
 	}
 
+	check_input() {
+		console.log('YES');
+		for(i = 0; i < this.shapes.length; i++) {
+			if (!this.shapes[i].label) {
+				this.shapes.pop();
+				return;
+			}
+		}
+	}
+
 	print_shapes() {
 		this.shapes.forEach(s => {
 			console.log(s.to_s())
@@ -276,33 +286,31 @@ class ShapeManager {
 		// draw polygon
 
 		ctx.beginPath();
-		ctx.moveTo(shape.points[0].x, shape.points[0].y);
 
-		var cx = 0;
-		var cy = 0;
-		var n = shape.points.length;
-
-		for (var i = 0; i < shape.points.length; i++) {
-			var point = shape.points[i];
+		var cx = 0, cy = 0, n=shape.points.length;
+		shape.points.forEach(point => {
 			ctx.lineTo(point.x, point.y);
-
 			cx += point.x;
 			cy += point.y;
-		}
+		});
 
         if (mouse_x > 0 && mouse_y > 0) {
+			var last = shape.points[n- 1]
+			ctx.moveTo(last.x, last.y);
             ctx.lineTo(mouse_x, mouse_y);
         }
 
 		ctx.closePath();
-		ctx.fillStyle = shape.selected ? 'rgba(0, 0, 0, .3)' : 'rgba(0, 0, 0, .15)';
-		ctx.fill();
+		if (n == 4) {
+			ctx.fillStyle = shape.selected ? 'rgba(0, 0, 0, .3)' : 'rgba(0, 0, 0, .15)';
+			ctx.fill();
+		}
 
 		ctx.strokeStyle = shape.selected ? 'rgba(255, 255, 255, .9)' : 'rgba(0, 255, 255, .7)';
 		ctx.stroke();
 
 		// draw edge points
-		for (var i = 0; i < shape.points.length; i++) {
+		for (var i = 0; i < n; i++) {
 			var point = shape.points[i];
 			ctx.lineJoin = 'bevel';
 			ctx.strokeStyle= shape.selected ? 'green' : 'red';
