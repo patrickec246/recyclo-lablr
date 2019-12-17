@@ -1,7 +1,10 @@
 :root {
-	--dockHeight : 4.5em;
+	--dockHeight : 8em;
 	--buttonRadius : 35px;
+	font-size:1.0em;
 }
+
+
 
 .gmnoprint a, .gmnoprint span, .gm-style-cc {
     display:none;
@@ -15,6 +18,8 @@ body {
 	padding:0;
 	overflow-x:hidden;
 	font-family: 'Nunito', sans-serif;
+	width: 100%;
+	height: 100%;
 }
 
 html {
@@ -462,18 +467,36 @@ input::placeholder {
 }
 
 .total-doc {
-	width: 600px;
-	height: 500px;
-	position:absolute;
-	top: 50%;
-	left: 50%;
-	margin: -250px 0 0 -300px;
+	width: 100%;
+	height: 100%;
+	position:relative;
 	z-index:10;
 }
 
+@media only screen and (min-width: 1000px) {
+	.total-doc {
+		width: 600px;
+		height: 500px;
+		position: absolute;
+		top:50%;
+		left:50%;
+		margin: -250px 0 0 -300px;
+		font-size: .6em;
+	}
+	.spacing-doc {
+		width:600px;
+		height:350px;
+	}
+	:root {
+		--dockHeight : 4.5em;
+		font-size:1.0em;
+	}
+}
+
 .spacing-doc {
-	width:600px;
-	height:350px;
+	font-size:1.5em;
+	width: 100%;
+	height: auto;
 	background-color: rgba(240, 240, 240, .4);
 	box-shadow: 1px 1px 3px rgba(0, 0, 0, .1);
 	border-radius: .5em;
@@ -554,25 +577,33 @@ input::placeholder {
 	color: rgb(33, 130, 200);
 	font-size:.75em;
 	font-family: Arial, Geneva, Helvetica, sans-serif;
-	position:absolute;
-	bottom:0px;
-	left:0px;
+	margin-top:1em;
 	background-color:rgba(255, 255, 255, .9);
-	border-bottom-left-radius: 5px;
-	border-bottom-right-radius: 5px;
+	border-radius:5px;
+	box-shadow: 1px 1px 1px rgba(0, 0, 0, .1);
 	float:bottom;
 	padding:3px;
+	
+}
+
+.modal-dialog {
+    border-radius: 100px;
+}
+
+.modal-header {
+	border-radius: 1ppx;
 }
 
 .info-dock {
+	font-family: 'Montserrat', sans-serif;
 	font-size:.8em;
-	color:rgb(70, 70, 70);
+	color:rgb(100, 100, 100);
 	padding:10px;
 }
 
 .info-dock-text {
 	color: rgb(240, 240, 240);
-	font-size:4em;
+	font-size:20pt;
 	font-family: 'Titillium Web', sans-serif;
 	font-weight:900;
 	width:100%;

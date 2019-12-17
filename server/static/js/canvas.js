@@ -464,9 +464,10 @@ $(window).on('load', function() {
 	var visited_before = sessionStorage.getItem("hasVisited");
 
 	if (visited_before == 'false' || visited_before == false || visited_before == null) {
-		sessionStorage.setItem("hasVisited", true);
+		sessionStorage.setItem("hasVisited", false);
 		show_tutorial_modal();
 	}
+	show_tutorial_modal();
 });
 
 $(document).ready(function() {
