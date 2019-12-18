@@ -76,7 +76,13 @@ function update_selected_shape() {
 }
 
 /* Set Resize Hooks */
-window.onload = reload_canvas;
+window.onload = function() {
+	var mobile = (/iphone|ipad|ipod|android|blackberry|mini|windows\sce|palm/i.test(navigator.userAgent.toLowerCase()));
+    if (mobile) {
+        alert("Mobile version in progress :O, try on a desktop");              
+    }
+	reload_canvas;
+}
 window.onresize = reload_canvas;
 
 /* Redraw the canvas (image then polygons) */

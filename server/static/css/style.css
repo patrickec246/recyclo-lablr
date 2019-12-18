@@ -1,5 +1,5 @@
 :root {
-	--dockHeight : 8em;
+	--dockHeight : 6em;
 	--buttonRadius : 35px;
 	font-size:1.0em;
 }
@@ -20,6 +20,13 @@ body {
 	font-family: 'Nunito', sans-serif;
 	width: 100%;
 	height: 100%;
+	min-height: 100vh;
+}
+
+.canvasWrapper {
+	width: 100%;
+	height: 100%;
+	position:relative;
 }
 
 html {
@@ -55,6 +62,7 @@ html {
 	position:fixed;
 	bottom:0;
 	left:0;
+	font-size:1.4em;
 	border-top: 1px solid rgba(150, 150, 150, .5);
 	box-shadow: 0px -2px 5px rgba(0, 0, 0, .2);
 	min-width:500px;
@@ -126,8 +134,8 @@ html {
 	border-radius:5px;
 	position:absolute;
 	left:10;
-	bottom:calc(10px + var(--dockHeight));
-	z-index:2;
+	bottom:10;
+	z-index:10;
 	box-shadow: 1px 1px 4px rgba(0, 0, 0, .6);
 	border: 2px solid rgba(20, 20, 20, .8);
 }
@@ -153,24 +161,35 @@ html {
 	padding:1em;;
 }
 
-.statsPanel {
+.statsPanelWrapper {
+	width: auto;
+	height: 100%;
 	position:absolute;
+	top:0;
 	left:0;
-	bottom:0;
-	width:auto;
-	height: var(--dockHeight);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.statsPanel {
+	width: 200px;
+	height: auto;
 	padding-top:1px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .localStatsPanel {
 	float:left;
-	height:100%;
+	height:auto;
 	width:100px;
 }
 
 .statsCol {
 	width:100%;
-	height:calc(100% - 20px);
+	height: auto;
 	display: flex;
 	flex-direction: column;
 	border-right: 1px solid rgb(220, 220, 220);
@@ -197,7 +216,7 @@ html {
 
 .globalStatsPanel {
 	float:right;
-	height:100%;
+	height:auto;
 	width:100px;
 }
 
@@ -490,6 +509,9 @@ input::placeholder {
 	:root {
 		--dockHeight : 4.5em;
 		font-size:1.0em;
+	}
+	.cpanel {
+		font-size: 1em;
 	}
 }
 

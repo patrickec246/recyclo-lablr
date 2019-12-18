@@ -14,6 +14,7 @@ def calc_iou(poly1, poly2):
 class Annotation(object):
 	def __init__(self, json_str=None):
 		self.annotation = {}
+		self.votes = 1
 
 		if json_str is not None:
 			self.initialize_from_json(json_str)
@@ -30,21 +31,36 @@ class Annotation(object):
 		self.annotation['label'] = json_obj['label'].replace('.', '').lower().strip()
 		self.annotation['producer'] = json_obj['producer'].lower().strip()
 		self.annotation['qualifiers'] = json_obj['qualifiers'].lower().strip()
-		self.annotation['points'] = [(p['x'], p['y']) for p in json_obj['points']]
-		self.annotation['raw_points'] = json_obj['points']
+		self.annotation['raw_points'] = [(p['x'], p['y']) for p in json_obj['points']]
+		self.annotation['points'] = json_obj['points']
 
 	def iou(self, other=None):
 		if other is None or type(other) is not Annotation:
 			return 0
 
-		return calc_iou(self.raw_points, other.raw_points)
+		return calc_iou(self.annotation['points'], other.annotation['points'])
+	
+	def label_diff(self, other=None):
+		if other is None or type(other) is not Annotation:
+			return 0
+		
+		if self.annotation['label'].lower().strip() == other.annotation['label'].strip().lower():
+			return 1
+
+		return 0
+	
+	def same_type(self, other=None):
+		if other is None or type(other) is not Annotation:
+			return False
+		return self.annotation['label'].lower().strip() == other.annotation['label'].lower().strip()
 
 	def diff(self, other=None):
 		if other is None or type(other) is not Annotation:
 			return 0
 
-		iou = self.iou(other)
-		return iou
+		iou = self.iou(other) # [0, 1] proportional to similarity
+		label_diff = self.label_diff(other) # [0, 1] proportional to similarity
+		return (1 - iou) # [0, 1] proportional to dissimilarity (diff)
 
 # TODO: Fix this up
 class AnnotationAggregator(object):
@@ -70,12 +86,24 @@ class AnnotationAggregator(object):
 		return ann
 
 	def aggregate(self):
-		min_iou = .2
+		min_iou = .8
+		tracking_layer = [] 
 		if self.annotations is None:
 			return None
 		
 		for i, idx in enumerate(self.annotations):
 			for j, annotation in enumerate(self.annotations[idx]):
-				print(i, j, annotation)
-
-		return json.dumps(self.annotations, indent=4, sort_keys=True)
+				represented = False
+				ann = Annotation()
+				ann.initialize_from_json(annotation)
+				for tracking_annotation in tracking_layer:
+					iou = ann.diff(tracking_annotation)
+					if iou < min_iou and ann.same_type(tracking_annotation):
+						tracking_annotation.votes += 1
+						represented = True
+						break
+				
+				if not represented:
+					tracking_layer.append(ann)
+		
+		return [a.annotation for a in tracking_layer]

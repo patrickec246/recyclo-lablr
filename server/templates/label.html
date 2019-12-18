@@ -2,14 +2,18 @@
 {% include "header.html" %}
 
 <body>
-	<div class="mapDock" id="mapDock">
-		<div class="mapArea"></div>
-	</div>
+	
 
 	<div class="canvas">
 		<!-- div for canvas -->
-		<div class="canvasDiv">
-		<canvas id="polyCanvas" width="1920" height="1080" style="cursor:crosshair"></canvas>
+		<div class="canvasWrapper">
+			<div class="canvasDiv">
+			<canvas id="polyCanvas" width="1920" height="1080" style="cursor:crosshair">
+			</canvas>
+			<div class="mapDock" id="mapDock">
+				<div class="mapArea"></div>
+			</div>
+		</div>
 		</div>
 
 		<div class="shapeDock" id="shapeDock">
@@ -45,31 +49,33 @@
 		</div>
 
 		<div class="cpanel">
-			<div class="statsPanel" id="statsPanel">
-				<div class="localStatsPanel">
-					<div class="statsTitle">You</div>
-					<div class="statsCol">
-						<div class="statsRow">
-							<i class="fa fa-image"></i>
-							<b><span class="labelText" id="localImages">0</span></b>
-						</div>
-						<div class="statsRow">
-							<i class="fa fa-tag"></i>
-							<b><span class="labelText" id="localLabels">0</span></b>
+			<div class="statsPanelWrapper">
+				<div class="statsPanel" id="statsPanel">
+					<div class="localStatsPanel">
+						<div class="statsTitle">You</div>
+						<div class="statsCol">
+							<div class="statsRow">
+								<i class="fa fa-image"></i>
+								<b><span class="labelText" id="localImages">0</span></b>
+							</div>
+							<div class="statsRow">
+								<i class="fa fa-tag"></i>
+								<b><span class="labelText" id="localLabels">0</span></b>
+							</div>
 						</div>
 					</div>
-				</div>
 
-				<div class="globalStatsPanel">
-					<div class="statsTitle">All</div>
-					<div class="statsCol">
-						<div class="statsRow">
-							<i class="fa fa-image"></i>
-							<b><span class="labelText" id="globalImages">0</span></b>
-						</div>
-						<div class="statsRow">
-							<i class="fa fa-tag"></i>
-							<b><span class="labelText" id="globalLabels">0</span></b>
+					<div class="globalStatsPanel">
+						<div class="statsTitle">All</div>
+						<div class="statsCol">
+							<div class="statsRow">
+								<i class="fa fa-image"></i>
+								<b><span class="labelText" id="globalImages">0</span></b>
+							</div>
+							<div class="statsRow">
+								<i class="fa fa-tag"></i>
+								<b><span class="labelText" id="globalLabels">0</span></b>
+							</div>
 						</div>
 					</div>
 				</div>
