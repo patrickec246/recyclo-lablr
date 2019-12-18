@@ -58,9 +58,6 @@ def complete_saturated_frames(num_annotations=2):
 
 		log('Merged annotations for frame: {}'.format(frame))
 
-		if True:
-			break
-
 def cleanup_completed_videos():
 	videos = []
 
