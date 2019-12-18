@@ -54,6 +54,7 @@ def complete_saturated_frames(num_annotations=1):
 
 		with open(target_file, 'w+') as f:
 			f.write(completed_frame)
+			shutil.rmtree(frame['dir'])
 
 		log('Merged annotations for frame: {}'.format(frame))
 
