@@ -4,12 +4,12 @@ from itertools import combinations_with_replacement
 from utils import *
 
 def calc_iou(poly1, poly2):
-    assert(len(poly1) == 4 and len(poly2) == 4)
+	assert(len(poly1) == 4 and len(poly2) == 4)
 
-    a = Polygon([(p['x'], p['y']) for p in poly1])
-    b = Polygon([(p['x'], p['y']) for p in poly2])
+	a = Polygon([(p['x'], p['y']) for p in poly1])
+	b = Polygon([(p['x'], p['y']) for p in poly2])
 
-    return a.intersection(b).area / a.union(b).area
+	return a.intersection(b).area / a.union(b).area
 
 class Annotation(object):
 	def __init__(self, json_str=None):
@@ -38,7 +38,7 @@ class Annotation(object):
 		if other is None or type(other) is not Annotation:
 			return 0
 
-		return calc_iou(self.annotation['points'], other.annotation['points'])
+		return calc_iou(self.raw_points, other.raw_points)
 	
 	def label_diff(self, other=None):
 		if other is None or type(other) is not Annotation:
