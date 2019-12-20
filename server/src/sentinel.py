@@ -7,6 +7,12 @@ from settings import stats
 from utils import *
 from frame_processor import *
 
+CONFIG_FILE = 'config.json'
+
+def load_config():
+    with open(CONFIG_FILE, 'r') as f:
+        return json.loads(f.read())
+
 class TaskTimer(threading.Timer):
     def run(self):
         while not self.finished.wait(self.interval):
@@ -16,13 +22,13 @@ class ServerSentinel(object):
     def __init__(self):
         config = load_config()
 
-        self.label_threshold    = config['label_threshold']
+        self.label_threshold = config['label_threshold']
         self.max_unlabeled_imgs = config['max_unlabeled_imgs']
 
         self.video_cleanup_rate = config['video_cleanup_rate']
         self.frame_cleanup_rate = config['frame_cleanup_rate']
         self.process_video_rate = config['process_video_rate']
-        self.update_stats_rate  = config['update_stats_rate']
+        self.update_stats_rate = config['update_stats_rate']
 
     def run(self):
         self.video_cleanup_task = TaskTimer(self.video_cleanup_rate, self.video_cleanup_sentinel)
