@@ -21,6 +21,12 @@ raw_root = 'data/raw'
 labeled_root = 'data/labeled'
 unlabeled_root = 'data/unlabeled'
 
+supported_video_types = ['mp4', 'avi', 'MOV', 'mov']
+supported_image_types = ['png', 'jpg', 'jpeg']
+
+'''
+ This is going to take some massaging to fine tune but this works... ok...
+'''
 def calculate_average_annotations(annotations, iou_thresh=.75):
     if len(annotations) > 0:
         return annotations[0]
@@ -40,15 +46,37 @@ def load_frame_annotations(uuid, frame, frame_dir=unlabeled_root):
 
     return js
 
-# Selects a random video path from all raw videos
-def pick_random_video():
-    valiad_videos = [x for x in glob.glob(os.path.join(raw_root, '*')) if 'MOV' in x]
-    return random.choice(valid_videos) if len(valid_videos) > 0 else None
+def pick_random_data_path():
+    def supported(data_path):
+        for supported_format in supported_video_types:
+            if supported_format.endswith('.' + supported_format):
+                return True
+        for supported_format in supported_image_types:
+            if supported_format.endswith('.' + supported_format):
+                return True
+        return False
 
-# Splits up a single video into frames & metadata
-def process_video(video_path, frame_output_dir=unlabeled_root, delete_after_processing=False):
-    log('Attempting to process video {}'.format(video_path))
-    frames = convert_video_to_frames(video_path)
+    valid_data = [data_path for data_path in glob.glob(os.path.join(raw_root, '*')) if supported(data_path)]
+    return random.choice(valid_data) if len(valid_data) > 0 else None
+
+def process_raw_data(data_path, frame_output_dir=unlabeled_root, delete_after_processing=True):
+    if not data_path:
+        return None
+
+    log('Attempting to process data path {}'.format(data_path))
+
+    labeled_video_types = [ext for ext in supported_video_types if data_path.endswith(ext)]
+    labeled_image_types = [ext for ext in supported_image_types if data_path.endswith(ext)]
+    labels = len(labeled_video_types) + len(labeled_image_types)
+    is_video = len(labeled_video_types) == 1
+
+    if labels == 0 or labels > 1:
+        return None
+
+    if len(labeled_video_types) == 1:
+        frames = convert_video_to_frames(data_path)
+    else:
+        frames = [(0, cv2.imread(data_path))]
 
     if not frames:
         return None
@@ -73,8 +101,8 @@ def process_video(video_path, frame_output_dir=unlabeled_root, delete_after_proc
         f.write(json.dumps(metadata, indent=4, sort_keys=True))
 
     if delete_after_processing:
-        log('Converted {} to individual frames. Deleting source video')
-        os.remove(video_path)
+        log('Converted {} to individual frames. Deleting source data')
+        os.remove(data_path)
 
     return path_name
 
@@ -83,10 +111,9 @@ def convert_video_to_frames(video_path):
     if not os.path.exists(video_path):
         return None
 
-    output = []
-
     log('Converting video to frames: {}'.format(video_path))
 
+    output = []
     video = cv2.VideoCapture(video_path)
     r, frame = video.read()
 
