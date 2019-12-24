@@ -474,6 +474,7 @@ input::placeholder {
 	background: rgb(34,193,195);
 	background: linear-gradient(0deg, rgba(34,193,195,1) 0%, rgba(253,187,45,1) 100%);
 	background: linear-gradient(0deg, #ACB6E5 0%, #74ebd5 100%);
+	overflow-x: hidden;
 }
 
 .leaf{
@@ -488,19 +489,37 @@ input::placeholder {
 .total-doc {
 	width: 100%;
 	height: 100%;
-	position:relative;
-	z-index:10;
+	position: relative;
+	z-index: 10;
+	font-size: 1.25rem;
+}
+
+.stats-panel {
+	position: fixed;
+	left: 0;
+	bottom: 0;
+	width: 100%;
+	height: auto;
+	text-align: center;
+	background-color:white;
+	padding: .5em;
+	font-size: 1.5em;
+	color: rgb(0, 125, 197);
 }
 
 @media only screen and (min-width: 1000px) {
 	.total-doc {
+		font-size: 1.0rem;
 		width: 600px;
-		height: 500px;
+		height: auto;
 		position: absolute;
-		top:50%;
-		left:50%;
-		margin: -250px 0 0 -300px;
+		top: 50%;
+		left: 50%;
+		margin: -225px 0 0 -300px;
 		font-size: .6em;
+		background-color: rgba(255, 255, 255, .1);
+		border-radius: 1em;
+		border: .5px solid rgba(255, 255, 255, .6);
 	}
 	.spacing-doc {
 		width:600px;
@@ -513,6 +532,11 @@ input::placeholder {
 	.cpanel {
 		font-size: 1em;
 	}
+	.stats-panel {
+		width: 100%;
+		font-size: 1.5em;
+		padding: .6rem;
+	}
 }
 
 .spacing-doc {
@@ -520,9 +544,8 @@ input::placeholder {
 	width: 100%;
 	height: auto;
 	background-color: rgba(240, 240, 240, .4);
-	box-shadow: 1px 1px 3px rgba(0, 0, 0, .1);
 	border-radius: .5em;
-	border: 1px solid rgba(255, 255, 255, .4);
+	border: .5px solid rgba(255, 255, 255, .3);
 	background: rgb(233,233,233);
 	background: linear-gradient(0deg, rgba(200, 200, 200, .4) 0%, rgba(240, 240, 240, .4) 100%);
 	position:relative;
@@ -565,6 +588,10 @@ input::placeholder {
 	margin-bottom:5px;
 	transition: background-color .4s;
 	font-size:.95em;
+}
+
+.custom-button-main a:hover {
+	text-decoration: none;
 }
 
 .donate-button {
@@ -630,7 +657,7 @@ input::placeholder {
 	font-weight:900;
 	width:100%;
 	height:auto;
-	text-shadow: 2px 2px 8px rgba(100, 100, 100, .3);
+	text-shadow: 2px 2px 5px rgba(100, 100, 100, .25);
 }
 
 .light-hr {

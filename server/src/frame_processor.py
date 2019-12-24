@@ -19,7 +19,7 @@ def find_saturated_frames(num_annotations):
 	saturated_frames = []
 	for root, dirs, files in os.walk(unlabeled_root):
 		json_files = [j for j in files if '.json' in j and 'metadata' not in j]
-		if len(jsons) >= num_annotations:
+		if len(json_files) >= num_annotations:
 			saturated_frames.append({'dir' : root, 'json_files' : json_files})
 
 	return saturated_frames
