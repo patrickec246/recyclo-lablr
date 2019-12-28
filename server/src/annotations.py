@@ -25,32 +25,26 @@ class Annotation(object):
 		if type(json_str) == str:
 			json_obj = json.loads(json_str)
 
-		self.annotation.clear()
-		self.annotation['label'] = json_obj['label'].replace('.', '').lower().strip()
-		self.annotation['producer'] = json_obj['producer'].lower().strip()
-		self.annotation['qualifiers'] = json_obj['qualifiers'].lower().strip()
-		self.annotation['raw_points'] = [(p['x'], p['y']) for p in json_obj['points']]
-		self.annotation['points'] = json_obj['points']
+		self.label = json_obj['label'].replace('.', '').lower().strip()
+		self.producer = json_obj['producer'].lower().strip()
+		self.qualifiers = json_obj['qualifiers'].lower().strip()
+		self.points = [(p['x'], p['y']) for p in json_obj['points']]
 
 	def iou(self, other=None):
 		if other is None or type(other) is not Annotation:
 			return 0
 
-		return calc_iou(self.raw_points, other.raw_points)
+		return calc_iou(self.points, other.points)
 	
 	def label_diff(self, other=None):
-		if other is None or type(other) is not Annotation:
-			return 0
-		
-		if self.annotation['label'].lower().strip() == other.annotation['label'].strip().lower():
+        if self.same_type(other):
 			return 1
-
 		return 0
 	
 	def same_type(self, other=None):
 		if other is None or type(other) is not Annotation:
 			return False
-		return self.annotation['label'].lower().strip() == other.annotation['label'].lower().strip()
+		return self.label == other.label
 
 	def diff(self, other=None):
 		if other is None or type(other) is not Annotation:
