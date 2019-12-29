@@ -1,0 +1,13 @@
+{
+    "inherit" : ["plastic_identifier"],
+    "class_modifications" : {
+        " with label" : {
+            "detect" : "plastic label",
+            "confidence" : 0.5
+        },
+        " with lid" : {
+            "detect" : "plastic lid",
+            "confidence" : 0.5
+        }
+    }
+}

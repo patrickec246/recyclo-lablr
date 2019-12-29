@@ -1,0 +1,6 @@
+{
+    "inherit" : "all",
+    "hint" : {
+        "color" : "yellow"
+    }
+}

@@ -63,7 +63,7 @@ def request_trash_data():
 
 @app.route('/labels.txt')
 def get_labels():
-    with open('static/labels.txt', 'r') as f:
+    with open('labels/labels.txt', 'r') as f:
         return f.read()
     return ''
 

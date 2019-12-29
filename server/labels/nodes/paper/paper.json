@@ -1,0 +1,9 @@
+{
+    "compostable" : true,
+    "post_processing" : {
+        "actions" : [],
+        "hook" : {
+            ""
+        }
+    }
+}
