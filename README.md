@@ -5,12 +5,19 @@ recyclr is a WIP and currently contains server logic for crowdsourced labeling f
 
 # Modules
 
-## labels: Labels
+## labels
 Labels and classes in recyclr are treated as a dynamic tree and use a json-formatted syntax to control detection logic. Classes are very flexible and may be added/removed from the labels/nodes directory according to the user's needs.
 
-See [label README.md](labels/README.md) for more info
+See the label module [README.md](labels/README.md) for more info
 
-## server: Labeling Server Interface
+## streams
+Material streams are represented as streams in recyclr. Each class can have a designated stream which it belongs to, including post-processed logic for further operations and sorting.
+
+Streams can be used to filter classes into groups based on the availability of certain streams in the user's area. During detection and retrieval, the agent will sort each item into a stream, and deliver the item to the appropriate stream.
+
+See the streams module [README.md](streams/README.md) for more info
+
+## server
 Stands up a server which serves unlabeled data in a labeling studio. This allows users to build datasets over the internet via crowsourcing, or over a local network with trusted labelers.
 
 Live demo: http://recyclr.net
