@@ -1,9 +1,6 @@
 class Stream():
     def __init__(self, stream_name=''):
         self.stream_name = stream_name
-    
-    def print(self):
-        print('yop')
 
 class StreamManager():
     def __init__(self):
