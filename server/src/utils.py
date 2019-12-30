@@ -11,16 +11,21 @@ import re
 
 from settings import *
 
+from pathlib import Path
 from io import StringIO, BytesIO
 from PIL import Image
 
 # Directories
-logs_root = 'logs'
-data_root = 'data'
-raw_root = 'data/raw'
-labeled_root = 'data/labeled'
-unlabeled_root = 'data/unlabeled'
+SRC_DIR = Path(__file__).parents[1]
 
+LOGS_PATH = SRC_DIR.joinpath('logs')
+DATA_PATH = SRC_DIR.joinpath('data')
+
+RAW_DATA_PATH = DATA_PATH.joinpath('raw')
+LABELED_DATA_PATH = DATA_PATH.joinpath('labeled')
+UNLABELED_DATA_PATH = DATA_PATH.joinpath('unlabeled')
+
+# Supported datatypes
 supported_video_types = ['mp4', 'avi', 'MOV', 'mov']
 supported_image_types = ['png', 'jpg', 'jpeg']
 
@@ -35,7 +40,7 @@ def calculate_average_annotations(annotations, iou_thresh=.75):
     return {}
 
 # Loads the annotation 
-def load_frame_annotations(uuid, frame, frame_dir=unlabeled_root):
+def load_frame_annotations(uuid, frame, frame_dir=UNLABELED_DATA_PATH):
     js = []
 
     annotation_dir = os.path.join(frame_dir, uuid, str(frame), '*.json')
@@ -56,10 +61,10 @@ def pick_random_data_path():
                 return True
         return False
 
-    valid_data = [data_path for data_path in glob.glob(os.path.join(raw_root, '*')) if supported(data_path)]
+    valid_data = [data_path for data_path in glob.glob(os.path.join(RAW_DATA_PATH, '*')) if supported(data_path)]
     return random.choice(valid_data) if len(valid_data) > 0 else None
 
-def process_raw_data(data_path, frame_output_dir=unlabeled_root, delete_after_processing=True):
+def process_raw_data(data_path, frame_output_dir=UNLABELED_DATA_PATH, delete_after_processing=True):
     if not data_path:
         return None
 
@@ -141,7 +146,7 @@ def get_video_metadata(file_path):
 
 # Loads the general metadata for a processed video
 def read_video_metadata(uuid):
-    metadata_file = os.path.join(unlabeled_root, uuid, 'metadata.json')
+    metadata_file = os.path.join(UNLABELED_DATA_PATH, uuid, 'metadata.json')
 
     if not os.path.exists(metadata_file):
         return None
@@ -163,7 +168,7 @@ def convert_img_to_base64(img_path, quality=80):
 
 # Adds a json annotation from the user to annotations uuid/frame_no
 def add_annotation(uuid, frame_no, js):
-    frame_dir = os.path.join(unlabeled_root, uuid, frame_no)
+    frame_dir = os.path.join(UNLABELED_DATA_PATH, uuid, frame_no)
 
     if not os.path.exists(frame_dir):
         return str(False)
@@ -195,7 +200,7 @@ def load_img_gps(uuid):
         dms = re.split('[°\'"]+', dms_str.replace('deg', '°').replace(' ', ''))
         return (float(dms[0]) + (float(dms[1]) / 60) + (float(dms[2]) / 3600)) * (-1 if dms[3] in ['S', 'W'] else 1)
 
-    meta_path = os.path.join(unlabeled_root, uuid, 'metadata.json')
+    meta_path = os.path.join(UNLABELED_DATA_PATH, uuid, 'metadata.json')
 
     if not os.path.exists(meta_path):
         return (0, 0)
@@ -211,9 +216,9 @@ def generate_image_labeling_json(last_img_uuid=None, last_frame=-1, sequential_i
             last_frame += 1
 
             if last_img_uuid is None:
-                last_img_uuid = random.choice([d for d in os.listdir(unlabeled_root) if not d.startswith('.')])
+                last_img_uuid = random.choice([d for d in os.listdir(UNLABELED_DATA_PATH) if not d.startswith('.')])
 
-            target_path = os.path.join(unlabeled_root, last_img_uuid)
+            target_path = os.path.join(UNLABELED_DATA_PATH, last_img_uuid)
             frame_path = os.path.join(target_path, str(last_frame))
 
             if os.path.exists(frame_path):
@@ -221,11 +226,11 @@ def generate_image_labeling_json(last_img_uuid=None, last_frame=-1, sequential_i
             else:
                 return pick_next_image(last_img_uuid, last_frame, False, True)
         else:
-            available_uuids = [d for d in os.listdir(unlabeled_root) if not d.startswith('.')]
+            available_uuids = [d for d in os.listdir(UNLABELED_DATA_PATH) if not d.startswith('.')]
             if len(available_uuids) == 0:
                 return None
             img_uuid = random.choice(available_uuids)
-            target_path = os.path.join(unlabeled_root, img_uuid)
+            target_path = os.path.join(UNLABELED_DATA_PATH, img_uuid)
             frames = sorted([d for d in os.listdir(target_path) if not d.startswith('.')])
             target_frame = frames[0] if pseudo_sequential else random.choice(frames)
             return os.path.join(target_path, target_frame, 'frame.jpg')
@@ -250,13 +255,13 @@ def generate_image_labeling_json(last_img_uuid=None, last_frame=-1, sequential_i
     return json.dumps(json_out, indent=4, sort_keys=True)
 
 def available_frames():
-    return len([f[0] for r,d,f in os.walk(unlabeled_root) if len(f) > 0 and 'jpg' in f[0]])
+    return len([f[0] for r,d,f in os.walk(UNLABELED_DATA_PATH) if len(f) > 0 and 'jpg' in f[0]])
 
 def load_labeled_stats(in_memory=True):
     if in_memory:
         return {'total_images' : stats.frames_labeled, 'total_labels' : stats.total_labels}
     else:
-        labeled_stats_file = os.path.join(logs_root, 'stats.json')
+        labeled_stats_file = os.path.join(LOGS_PATH, 'stats.json')
         if os.path.exists(labeled_stats_file):
             with open(labeled_stats_file, 'r') as f:
                 return json.loads(f.read())
@@ -266,7 +271,7 @@ def load_labeled_stats(in_memory=True):
     return {'total_images' : 0, 'total_labels' : 0}
 
 def save_labeled_stats(total_images, total_labels):
-    labeled_stats_file = os.path.join(logs_root, 'stats.json')
+    labeled_stats_file = os.path.join(LOGS_PATH, 'stats.json')
 
     with open(labeled_stats_file, 'w+') as f:
         f.write(json.dumps({'total_images' : total_images, 'total_labels' : total_labels}, indent=4, sort_keys=True))

@@ -2,12 +2,13 @@ import json
 import logging
 import threading
 
+from pathlib import Path
 from settings import stats
 
 from utils import *
 from frame_processor import *
 
-CONFIG_FILE = 'config.json'
+CONFIG_FILE = Path(__file__).parents[1].absolute().joinpath('config.json')
 
 def load_config():
     with open(CONFIG_FILE, 'r') as f:

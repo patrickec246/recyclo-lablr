@@ -59,7 +59,7 @@ class Annotation(object):
 # TODO: Fix this up
 class AnnotationAggregator(object):
 	def __init__(self):
-		self.default_path = unlabeled_root
+		self.default_path = UNLABELED_DATA_PATH
 		self.annotations = {}
 
 	def clearAnnotations(self):

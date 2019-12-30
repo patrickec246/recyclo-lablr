@@ -1,6 +1,13 @@
 import sys
-sys.path.insert(0, './src')
+from pathlib import Path
 
+LABEL_MODULE = str(Path(__file__).parents[1].absolute().joinpath('labels'))
+SRC_MODULE   = str(Path(__file__).parent.absolute().joinpath('src'))
+
+sys.path.insert(0, LABEL_MODULE)
+sys.path.insert(1, SRC_MODULE)
+
+from label_preprocessor import *
 from flask import Flask, render_template, request
 from utils import *
 from sentinel import *

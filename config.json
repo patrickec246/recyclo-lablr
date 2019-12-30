@@ -1,8 +1,0 @@
-{
-    "label_threshold" : 5,
-    "max_unlabeled_imgs" : 100,
-    "video_cleanup_rate" : 20,
-    "frame_cleanup_rate" : 10,
-    "process_video_rate" : 10,
-    "update_stats_rate" : 5
-}

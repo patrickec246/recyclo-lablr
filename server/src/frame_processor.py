@@ -13,11 +13,11 @@ aggregator = AnnotationAggregator()
 # return a list of directories of adequately labeled images,
 # along with the json files (labels) in the directory
 def find_saturated_frames(num_annotations):
-	all_uuids = glob.glob(os.path.join(unlabeled_root, '*', ''))
+	all_uuids = glob.glob(os.path.join(UNLABELED_DATA_PATH, '*', ''))
 	uuids = [{'uuid' : os.path.basename(os.path.normpath(x)), 'path' : os.path.normpath(x)} for x in all_uuids]
 
 	saturated_frames = []
-	for root, dirs, files in os.walk(unlabeled_root):
+	for root, dirs, files in os.walk(UNLABELED_DATA_PATH):
 		json_files = [j for j in files if '.json' in j and 'metadata' not in j]
 		if len(json_files) >= num_annotations:
 			saturated_frames.append({'dir' : root, 'json_files' : json_files})
@@ -49,7 +49,7 @@ def complete_saturated_frames(num_annotations=1):
 
 		completed_frame = json.dumps(json_obj, indent=4, sort_keys=True)
 
-		target_file_dir = os.path.join(labeled_root, uuid)
+		target_file_dir = os.path.join(LABELED_DATA_PATH, uuid)
 		if not os.path.exists(target_file_dir):
 			os.mkdir(target_file_dir)
 
@@ -65,7 +65,7 @@ def complete_saturated_frames(num_annotations=1):
 def cleanup_completed_videos():
 	videos = []
 
-	for file in glob.glob(os.path.join(unlabeled_root, '*', '')):
+	for file in glob.glob(os.path.join(UNLABELED_DATA_PATH, '*', '')):
 		dir_files = glob.glob(os.path.join(file, '*'))
 		if len(dir_files) == 1 and os.path.basename(dir_files[0]) == 'metadata.json':
 			log('Deleting video: {}'.format(file))
