@@ -1,3 +1,13 @@
 {
-    "parent" : "plastic"
+    "parent" : "plastic bottle",
+    "class_modifications" : {
+        "labeled" : {
+            "detect" : "plastic label",
+            "confidence" : 0.5
+        },
+        "cap" : {
+            "detect" : "plastic bottle cap",
+            "confidence" : 0.5
+        }
+    }
 }
