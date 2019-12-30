@@ -1,4 +1,5 @@
 {
+    "parent" : "plastic bottle",
     "inherit" : ["plastic_identifier"],
     "class_modifications" : {
         " with label" : {

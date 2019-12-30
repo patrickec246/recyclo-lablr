@@ -1,3 +1,4 @@
 {
+    "parent" : "plastic cup",
     "inherit" : "all"
 }

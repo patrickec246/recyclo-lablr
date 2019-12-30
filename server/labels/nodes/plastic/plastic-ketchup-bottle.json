@@ -1,4 +1,5 @@
 {
+    "parent" : "plastic condiment bottle",
     "inherit" : "all",
     "hint" : {
         "color" : "red"

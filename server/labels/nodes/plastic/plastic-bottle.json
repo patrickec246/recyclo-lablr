@@ -1,4 +1,5 @@
 {
+    "parent" : "plastic",
     "plastic_identifier" : [2, 3, 4],
     "class_modifications" : {
         "labeled" : {
