@@ -106,7 +106,6 @@ def build_primary_tree():
 
 def generate_server_label_text(file_name='labels.txt'):
     raw_tree = build_raw_tree()
-    raw_tree.show()
     class_list = [node.identifier for node in raw_tree.all_nodes() if node.identifier is not 'root']
     class_list.sort(key=len)
 

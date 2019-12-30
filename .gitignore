@@ -2,3 +2,4 @@ server/data/
 server/.DS_Store
 .DS_Store
 server/logs/
+server/labels/labels.txt
