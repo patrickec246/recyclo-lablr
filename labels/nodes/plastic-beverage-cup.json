@@ -4,14 +4,14 @@
     "modifiers" : {
         "_" : [
             {
-                "property" : "plastic_identifier",
+                "property" : "RIC",
                 "source" : "qualifier",
                 "value" : [3, 4]
             }
         ],
         "clear" : [
             {
-                "property" : "plastic_identifier",
+                "property" : "RIC",
                 "source" : "qualifier",
                 "value" : [1, 2]
             }

@@ -1,6 +1,6 @@
 {
     "parent" : "plastic bottle",
-    "inherit" : ["plastic_identifier"],
+    "inherit" : ["RIC"],
     "class_modifications" : {
         " with label" : {
             "detect" : "plastic label",
