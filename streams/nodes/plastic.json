@@ -1,0 +1,15 @@
+{
+    "name" : "plastic",
+    "filter" : {
+        "RIC" : {
+            "operation" : "is",
+            "value" : [1, 2, 5],
+            "defer" : "trash"
+        },
+        "class" : {
+            "operation" : "exclude",
+            "value" : ["plastic straw"],
+            "defer" : "trash"
+        }
+    }
+}

@@ -1,0 +1,10 @@
+{
+    "name": "battery",
+    "filter" : {
+        "class" : {
+            "operation" : "is",
+            "value" : ["battery"],
+            "defer" : "trash"
+        }
+    }
+}
