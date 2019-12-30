@@ -1,4 +1,5 @@
 {
     "parent" : "plastic",
-    "RIC" : [2, 3, 4]
+    "RIC" : [2, 3, 4],
+    "stream" : "plastic"
 }

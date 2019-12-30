@@ -1,11 +1,11 @@
 import sys
 from pathlib import Path
 
-LABEL_MODULE = str(Path(__file__).parents[1].absolute().joinpath('labels'))
-SRC_MODULE   = str(Path(__file__).parent.absolute().joinpath('src'))
+LABEL_MODULE = Path(__file__).parents[1].absolute().joinpath('labels')
+SRC_MODULE   = Path(__file__).parent.absolute().joinpath('src')
 
-sys.path.insert(0, LABEL_MODULE)
-sys.path.insert(1, SRC_MODULE)
+sys.path.insert(0, str(LABEL_MODULE))
+sys.path.insert(1, str(SRC_MODULE))
 
 from label_preprocessor import *
 from flask import Flask, render_template, request

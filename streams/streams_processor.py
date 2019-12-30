@@ -1,15 +1,11 @@
-import pathlib
 import json
 
 from stream import *
 from treelib import Node, Tree
 
-FILE_PATH = pathlib.Path(__file__).parent
-NODES_PATH = FILE_PATH.joinpath('nodes')
-
 def load_streams():
     json_obj_map = {}
-    for node in NODES_PATH.glob('**/*.json'):
+    for node in STREAM_NODES_PATH.glob('**/*.json'):
         json_obj = {}
         with open(node, 'r') as node_file:
             try:
@@ -25,7 +21,7 @@ def load_stream_manager():
     streams = load_streams()
     if not streams:
         return
-    
+
     stream_manager = StreamManager()
 
     for stream in streams:
