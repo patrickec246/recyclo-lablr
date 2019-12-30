@@ -22,9 +22,6 @@ class StreamManager():
         if self.default_stream is None:
             self.default_stream = stream
 
-        if 'name' not in stream:
-            print(stream)
-
         if stream['name'] not in self.streams:
             self.streams[stream['name']] = stream
     
