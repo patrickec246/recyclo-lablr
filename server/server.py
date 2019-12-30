@@ -74,7 +74,14 @@ def get_labels():
         return f.read()
     return ''
 
+def setup_server():
+    # Create the label tree & write labels.txt
+    generate_server_label_text()
+
 if __name__ == "__main__":
+    # Run server setup
+    setup_server()
+
     # Start server backend process
     sentinel = ServerSentinel()
     sentinel.run()
