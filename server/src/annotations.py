@@ -25,10 +25,14 @@ class Annotation(object):
 		if type(json_str) == str:
 			json_obj = json.loads(json_str)
 
+		if not json_obj:
+			return False
+
 		self.label = json_obj['label'].replace('.', '').lower().strip()
 		self.producer = json_obj['producer'].lower().strip()
 		self.qualifiers = json_obj['qualifiers'].lower().strip()
 		self.points = [(p['x'], p['y']) for p in json_obj['points']]
+		return True
 
 	def iou(self, other=None):
 		if other is None or type(other) is not Annotation:
@@ -37,9 +41,7 @@ class Annotation(object):
 		return calc_iou(self.points, other.points)
 	
 	def label_diff(self, other=None):
-        if self.same_type(other):
-			return 1
-		return 0
+		return 1 if self.same_type(other) else 0
 	
 	def same_type(self, other=None):
 		if other is None or type(other) is not Annotation:
@@ -87,7 +89,8 @@ class AnnotationAggregator(object):
 			for j, annotation in enumerate(self.annotations[idx]):
 				represented = False
 				ann = Annotation()
-				ann.initialize_from_json(annotation)
+				if not ann.initialize_from_json(annotation):
+					continue
 				for tracking_annotation in tracking_layer:
 					iou = ann.diff(tracking_annotation)
 					if iou < min_iou and ann.same_type(tracking_annotation):
