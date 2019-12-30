@@ -66,8 +66,17 @@ def build_primary_tree():
     raw_tree = build_raw_tree()
 
     def inherit(node, field, parent_node):
-        if None in (node, field, parent_node):
+        if None in (node, parent_node, parent_node.data):
             return
+
+        if field is None:
+            for k,v in parent_node.data.items():
+                if k not in node.data:
+                    node.data[k] = v
+            if parent_node.bpointer is not None:
+                inherit(node, field, raw_tree.get_node(parent_node.bpointer))
+            return
+
         if field in parent_node.data:
             node.data[field] = parent_node.data[field]
         elif parent_node.bpointer is not None:
@@ -87,8 +96,10 @@ def build_primary_tree():
 
         if 'inherit' in dynamic_map:
             inherit_behavior = dynamic_map['inherit']
-            if (type(inherit_behavior) is list):
+            if type(inherit_behavior) is list:
                 for inherit_field in inherit_behavior:
                     inherit(gen_node, inherit_field, tree.get_node(gen_node.bpointer))
+            elif type(inherit_behavior) is str and inherit_behavior == 'all':
+                inherit(gen_node, None, tree.get_node(gen_node.bpointer))
 
     return tree
