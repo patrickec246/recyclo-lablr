@@ -112,5 +112,3 @@ def generate_server_label_text(file_name='labels.txt'):
 
     with open(FILE_PATH.joinpath(file_name), 'w+') as f:
         f.write('\n'.join(class_list))
-
-generate_server_label_text()
