@@ -104,10 +104,13 @@ def build_primary_tree():
 
     return tree
 
-def generate_server_label_text(file_name='labels.txt'):
+def generate_server_label_text(file_name='labels.txt', custom_path=None):
     raw_tree = build_raw_tree()
     class_list = [node.identifier for node in raw_tree.all_nodes() if node.identifier is not 'root']
     class_list.sort(key=len)
 
-    with open(FILE_PATH.joinpath(file_name), 'w+') as f:
+    if custom_path is None:
+        custom_path = FILE_PATH
+
+    with open(custom_path.joinpath(file_name), 'w+') as f:
         f.write('\n'.join(class_list))
