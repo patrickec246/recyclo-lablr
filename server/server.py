@@ -76,7 +76,7 @@ def get_labels():
 
 def setup_server():
     # Create the label tree & write labels.txt
-    generate_server_label_text()
+    generate_server_label_text(sort_by_len=True)
 
 if __name__ == "__main__":
     # Run server setup
