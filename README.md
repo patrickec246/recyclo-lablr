@@ -37,3 +37,4 @@ Live demo: http://recyclr.net
 
 **Adding data to be labeled**
 Simply place your raw videos or images in the **server/data/raw** directory. Videos will be selected when necessary and converted into individual frames to be served for labeling. Images will be randomly selected and served as frames.
+
