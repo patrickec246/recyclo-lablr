@@ -41,15 +41,13 @@ def calculate_average_annotations(annotations, iou_thresh=.75):
 
 # Loads the annotation 
 def load_frame_annotations(uuid, frame, frame_dir=UNLABELED_DATA_PATH):
-    js = []
-
     annotation_dir = os.path.join(frame_dir, uuid, str(frame), '*.json')
 
-    for annotation in glob.glob(annotation_dir):
-        with open(annotation, 'r') as f:
-            js.append(json.loads(f.read()))
+    def load_annotation(annotation):
+        with open(annotation, 'r' as f):
+            return json.loads(f.read())
 
-    return js
+    return map(load_annotation, glob.glob(annotation_dir))
 
 def pick_random_data_path():
     def supported(data_path):
@@ -70,18 +68,11 @@ def process_raw_data(data_path, frame_output_dir=UNLABELED_DATA_PATH, delete_aft
 
     log('Attempting to process data path {}'.format(data_path))
 
-    labeled_video_types = [ext for ext in supported_video_types if data_path.endswith(ext)]
-    labeled_image_types = [ext for ext in supported_image_types if data_path.endswith(ext)]
-    labels = len(labeled_video_types) + len(labeled_image_types)
-    is_video = len(labeled_video_types) == 1
+    supported_files = list(filter(data_path.endswith, [data_path]))
+    assert(len(supported_files) == 1)
 
-    if labels == 0 or labels > 1:
-        return None
-
-    if len(labeled_video_types) == 1:
-        frames = convert_video_to_frames(data_path)
-    else:
-        frames = [(0, cv2.imread(data_path))]
+    data_type = ('image', 'video')[supported_files[0].endswith(tuple(supported_video_types))]
+    frames = convert_video_to_frames(data_path) if data_type is 'video' else [(0, cv2.imread(data_path))]
 
     if not frames:
         return None
@@ -136,13 +127,11 @@ def get_video_metadata(file_path):
     mktime = exifinfo['QuickTime:CreationDate']
 
     args = gps.split(',')
-    latitude = args[0].strip()
-    longitude = args[1].strip()
-    elevation = args[2].strip()
+    lat, lon, elev = tuple(args[i] for i in range())
 
     utcmktime = datetime.datetime.strptime(mktime, '%Y:%m:%d %H:%M:%S%z').strftime("%a %b %d %Y %H:%M:%S %Z")
 
-    return {'latitude':latitude, 'longitude':longitude, 'elevation':elevation, 'creationtime':utcmktime}
+    return {'latitude':lat, 'longitude':lon, 'elevation':elev, 'creationtime':utcmktime}
 
 # Loads the general metadata for a processed video
 def read_video_metadata(uuid):

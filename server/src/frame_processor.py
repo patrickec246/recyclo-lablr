@@ -18,7 +18,7 @@ def find_saturated_frames(num_annotations):
 
 	saturated_frames = []
 	for root, dirs, files in os.walk(UNLABELED_DATA_PATH):
-		json_files = [j for j in files if '.json' in j and 'metadata' not in j]
+		json_files = [j for j in files if j.endswith('.json') and j is not 'metadata.json']
 		if len(json_files) >= num_annotations:
 			saturated_frames.append({'dir' : root, 'json_files' : json_files})
 
@@ -40,14 +40,10 @@ def complete_saturated_frames(num_annotations=1):
 		aggregated_label = aggregator.aggregate()
 
 		# Construct the output content
-		json_obj = {}
+		json_obj = {k:v for k,v in read_video_metadata(uuid).items()}
 		json_obj['labels'] = aggregated_label
 		json_obj['img_data'] = convert_img_to_base64(os.path.join(frame['dir'], 'frame.jpg'), quality=100)
 		json_obj['src_id'] = uuid
-		for k,v in read_video_metadata(uuid).items():
-			json_obj[k] = v
-
-		completed_frame = json.dumps(json_obj, indent=4, sort_keys=True)
 
 		target_file_dir = os.path.join(LABELED_DATA_PATH, uuid)
 		if not os.path.exists(target_file_dir):
@@ -56,22 +52,16 @@ def complete_saturated_frames(num_annotations=1):
 		# The frame and its labels can now be written to target_file
 		target_file = os.path.join(target_file_dir, '{}.json'.format(frame_no))
 		with open(target_file, 'w+') as f:
-			f.write(completed_frame)
+			f.write(json.dumps(json_obj, indent=4, sort_keys=True))
 			shutil.rmtree(frame['dir'])
 
 		log('Merged annotations for frame: {}'.format(frame))
 
 # once a directory is empty (except for the metadata file), clean it up
 def cleanup_completed_videos():
-	videos = []
-
 	for file in glob.glob(os.path.join(UNLABELED_DATA_PATH, '*', '')):
 		dir_files = glob.glob(os.path.join(file, '*'))
 		if len(dir_files) == 1 and os.path.basename(dir_files[0]) == 'metadata.json':
 			log('Deleting video: {}'.format(file))
 			shutil.rmtree(file)
-		videos.append(file)
 
-	return videos
-
-complete_saturated_frames()

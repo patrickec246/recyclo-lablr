@@ -33,8 +33,8 @@ class ServerSentinel(object):
 
     def run(self):
         self.video_cleanup_task = TaskTimer(self.video_cleanup_rate, self.video_cleanup_sentinel)
-        self.video_cleanup_task.daemon = True
         self.frame_cleanup_task = TaskTimer(self.frame_cleanup_rate, self.frame_cleanup_sentinel)
+        self.video_cleanup_task.daemon = True
         self.frame_cleanup_task.daemon = True
         self.process_video_task = TaskTimer(self.process_video_rate, self.process_video_sentinel)
         self.process_video_task.daemon = True
