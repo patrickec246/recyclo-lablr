@@ -42,7 +42,7 @@ class Annotation(object):
 	# TODO: Implement tree-depth based diff for calculating diff
 	# between two labels in the label-tree
 	def label_diff(self, other=None):
-		return (0, 1)[self.same_type(other)]
+		return int(not self.same_type(other))
 	
 	def same_type(self, other=None):
 		assert(other)
