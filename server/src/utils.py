@@ -71,7 +71,7 @@ def process_raw_data(data_path, frame_output_dir=UNLABELED_DATA_PATH, delete_aft
     supported_files = list(filter(data_path.endswith, [data_path]))
     assert(len(supported_files) == 1)
 
-    data_type = ('image', 'video')[supported_files[0].endswith(tuple(supported_video_types))]
+    data_type = ('image', 'video')[int(supported_files[0].endswith(tuple(supported_video_types)))]
     frames = convert_video_to_frames(data_path) if data_type is 'video' else [(0, cv2.imread(data_path))]
 
     if not frames:
