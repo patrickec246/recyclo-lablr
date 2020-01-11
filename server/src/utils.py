@@ -44,7 +44,7 @@ def load_frame_annotations(uuid, frame, frame_dir=UNLABELED_DATA_PATH):
     annotation_dir = os.path.join(frame_dir, uuid, str(frame), '*.json')
 
     def load_annotation(annotation):
-        with open(annotation, 'r' as f):
+        with open(annotation, 'r') as f:
             return json.loads(f.read())
 
     return map(load_annotation, glob.glob(annotation_dir))
