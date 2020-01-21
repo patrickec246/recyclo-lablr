@@ -478,8 +478,8 @@ input::placeholder {
 }
 
 .leaf{
-  width:45px;
-  height:45px;
+  width:60px;
+  height:60px;
   position:absolute;
   background: url(../eco-leaf.png);
   background-size: 100% 100%;
@@ -491,7 +491,8 @@ input::placeholder {
 	height: 100%;
 	position: relative;
 	z-index: 10;
-	font-size: 1.25rem;
+	font-size: 1.1rem;
+	background-color: rgba(255, 255, 255, .25);
 }
 
 .stats-panel {
@@ -507,6 +508,23 @@ input::placeholder {
 	color: rgb(0, 125, 197);
 }
 
+.center-text {
+	width: 100%;
+	height: 100%;
+  	display: flex;
+  	justify-content: center;
+  	align-items: center;
+  	background-color: rgb(240, 240, 240);
+}
+
+.center-text-block {
+	width: auto;
+	height: auto;
+	font-size: 4em;
+	font-family: 'Segoe UI Light', sans-serif;
+	font-weight: 100;
+}
+
 @media only screen and (min-width: 1000px) {
 	.total-doc {
 		font-size: 1.0rem;
@@ -517,9 +535,10 @@ input::placeholder {
 		left: 50%;
 		margin: -225px 0 0 -300px;
 		font-size: .6em;
-		background-color: rgba(255, 255, 255, .1);
-		border-radius: 1em;
-		border: .5px solid rgba(255, 255, 255, .6);
+		background-color: white;
+		border: .5px solid black;
+		padding: .7em;
+		border-radius:.5em;
 	}
 	.spacing-doc {
 		width:600px;
@@ -563,6 +582,7 @@ input::placeholder {
 	width: 50%;
 	height:100%;
 	padding:10px;
+	font-size:1.1em;
 }
 
 .left-info {
@@ -595,7 +615,6 @@ input::placeholder {
 }
 
 .donate-button {
-	color:green;
 }
 
 .custom-button-main:hover {
@@ -607,8 +626,8 @@ input::placeholder {
 	font-size:.6em;
 	font-weight: 400;
 	padding: 0px 5px 0px 5px;
-	color: rgb(80, 80, 80);
-	text-shadow: 1px 1px 2px rgba(255, 255, 255, .2);
+	color: rgb(5, 5, 5);
+	text-shadow: 1px 1px 2px rgba(255, 255, 255, .05);
 }
 
 .start-button {
@@ -640,24 +659,25 @@ input::placeholder {
 }
 
 .modal-header {
-	border-radius: 1ppx;
+	border-radius: 1px;
 }
 
 .info-dock {
-	font-family: 'Montserrat', sans-serif;
-	font-size:.8em;
-	color:rgb(100, 100, 100);
+	text-align: center;
+	font-size:.85em;
+	color: rgb(15, 15, 15);
 	padding:10px;
+	font-weight: 100;
+	font-family: 'Segoe UI Light', sans-serif;
 }
 
 .info-dock-text {
-	color: rgb(240, 240, 240);
-	font-size:20pt;
-	font-family: 'Titillium Web', sans-serif;
-	font-weight:900;
+	color: rgb(10, 10, 10);
+	font-size:4em;
+	font-weight:100;
 	width:100%;
 	height:auto;
-	text-shadow: 2px 2px 5px rgba(100, 100, 100, .25);
+	text-shadow: 2px 2px 5px rgba(100, 100, 100, .1);
 }
 
 .light-hr {
